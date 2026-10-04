@@ -17,8 +17,8 @@ test('lumberyards provide 5, 8, 11 tree plots and no passive wood',()=>{
 test('trees grow, harvest for five wood, then release their square',()=>{
  let s=village(),id=s.buildings[0].id;
  s=reducer(s,{type:'PLANT',farmId:id,x:15,y:15});assert.equal(s.crops[0].kind,'tree');
- assert.match(canPlant(s,id,15,15),/засято/);
- assert.match(canPlace(s,'road',15,15),/прибери/);
+ assert.match(canPlant(s,id,15,15),/planted/);
+ assert.match(canPlace(s,'road',15,15),/Harvest/);
  for(let i=0;i<44;i++)s=reducer(s,{type:'TICK'});
  const wood=s.resources.wood;s=reducer(s,{type:'HARVEST',id:s.crops[0].id});assert.equal(s.resources.wood,wood);
  s=reducer(s,{type:'TICK'});assert.equal(cropReady(s.crops[0]),true);

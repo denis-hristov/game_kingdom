@@ -1,4 +1,5 @@
 import {blockedTiles,findRoute,moveAlongRoute} from './navigation.js';
+import {translateLegacyMessage} from './legacy-messages.js';
 
 export const SIZE = 44;
 export const WHEAT_GROW_SECONDS = 45;
@@ -16,28 +17,28 @@ export const MARKET_TRADES = {
 export function marketTrade(market,resource){return MARKET_TRADES[resource]?.[market.level-1]||null;}
 export const SAVE_KEY = 'oakvale.v1';
 export const RESOURCES = ['wood', 'stone', 'food', 'gold'];
-export const NAMES = {wood:'Дърво',stone:'Камък',food:'Храна',gold:'Злато'};
+export const NAMES = {wood:'Wood',stone:'Stone',food:'Food',gold:'Gold'};
 export const BUILDINGS = {
-  castle:{name:'Главен замък',desc:'Сърцето на твоето кралство. Всяко ниво отваря нови земи и подобрения.',size:3,cost:{},hp:650,max:5},
-  house:{name:'Къща',desc:'Уютен дом за 6 жители на ниво. Нов жител пристига на всеки 18 секунди, ако има храна.',size:2,cost:{wood:55,stone:15},hp:150,max:3},
-  farm:{name:'Ферма',desc:'Отключва 5 квадратчета за жито на ниво 1 и още 3 на всяко следващо ниво. Готовото жито дава 5 храна. На ниво 3 се прибира и засажда отново автоматично. При недостиг на работници зрее два пъти по-бавно.',size:2,cost:{wood:45,gold:15},hp:130,max:3},
-  lumber:{name:'Дърварница',desc:'Отключва 5 квадратчета за дървета на ниво 1 и още 3 на всяко следващо ниво. Всяко пораснало дърво дава 5 дърво. На ниво 3 дърветата се прибират и засаждат отново автоматично. При недостиг на работници растат два пъти по-бавно.',size:2,cost:{wood:40,stone:10},hp:160,max:3},
-  quarry:{name:'Каменоломна',desc:'Произвежда 18 камък на минута за всяко ниво. Нужни са 5 работници на ниво 1 и още 3 за всяко следващо ниво. При недостиг работи на 50%.',size:2,cost:{wood:65,gold:25},hp:200,max:3,production:'stone',rate:0.3},
-  market:{name:'Пазар',desc:'Избери храна, дърво или камък за продажба. При назначен работник прави сделка на всеки 20 секунди. По-високите нива продават повече стока за повече злато. Можеш да смениш стоката или да спреш търговията по всяко време.',size:2,cost:{wood:80,stone:35},hp:170,max:3},
-  barracks:{name:'Казарма',desc:'Превръща свободните жители в мечоносци, стрелци и пазачи. По-високите нива ускоряват обучението.',size:2,cost:{wood:90,stone:60,gold:35},hp:240,max:3},
-  wall:{name:'Крепостна стена',desc:'Забавя враговете и поема ударите им. Свързва се със съседни стени.',size:1,cost:{stone:6},hp:560,max:3},
-  tower:{name:'Стражева кула',desc:'Обстрелва враговете в радиус 7 полета. Всяко ниво увеличава щетите.',size:1,cost:{wood:35,stone:65,gold:20},hp:300,max:3},
-  road:{name:'Пътека',desc:'Свържи кварталите на селището. Хората и войниците могат да минават по нея.',size:1,cost:{stone:2},hp:1,max:1},
+  castle:{name:'Main castle',desc:'The heart of your kingdom. Upgrades unlock higher building levels and territory expansions.',size:3,cost:{},hp:650,max:5},
+  house:{name:'House',desc:'A home for 6 residents per level. A new resident arrives every 18 seconds if food is available.',size:2,cost:{wood:55,stone:15},hp:150,max:3},
+  farm:{name:'Farm',desc:'Provides 5 wheat plots at level 1 and 3 more per upgrade. Mature wheat yields 5 food. At level 3, crops are harvested and replanted automatically. Understaffing halves growth speed.',size:2,cost:{wood:45,gold:15},hp:130,max:3},
+  lumber:{name:'Lumberyard',desc:'Provides 5 tree plots at level 1 and 3 more per upgrade. Each mature tree yields 5 wood. At level 3, trees are harvested and replanted automatically. Understaffing halves growth speed.',size:2,cost:{wood:40,stone:10},hp:160,max:3},
+  quarry:{name:'Quarry',desc:'Produces 18 stone per minute per level. Requires 5 workers at level 1 and 3 more per upgrade. Understaffing halves production.',size:2,cost:{wood:65,gold:25},hp:200,max:3,production:'stone',rate:0.3},
+  market:{name:'Market',desc:'Choose food, wood, or stone to sell. With an assigned worker, completes one trade every 20 seconds. Higher levels sell more goods for more gold. Switch goods or stop trading at any time.',size:2,cost:{wood:80,stone:35},hp:170,max:3},
+  barracks:{name:'Barracks',desc:'Trains unassigned residents as swordsmen, archers, and guards. Upgrades speed up training.',size:2,cost:{wood:90,stone:60,gold:35},hp:240,max:3},
+  wall:{name:'Castle wall',desc:'Slows enemies and absorbs damage. Connects to adjacent walls.',size:1,cost:{stone:6},hp:560,max:3},
+  tower:{name:'Watchtower',desc:'Fires at enemies within 7 tiles. Each upgrade increases damage.',size:1,cost:{wood:35,stone:65,gold:20},hp:300,max:3},
+  road:{name:'Road',desc:'Connects your village. Residents and soldiers can travel along it.',size:1,cost:{stone:2},hp:1,max:1},
 };
 export const UNITS = {
-  swordsman:{name:'Мечоносец',desc:'Балансиран боец за походи.',cost:{food:30,gold:20},power:18,hp:90,attack:12,range:1.5,time:10},
-  archer:{name:'Стрелец',desc:'Атакува от разстояние.',cost:{food:25,wood:20,gold:15},power:15,hp:55,attack:10,range:5,time:12},
-  guard:{name:'Пазач',desc:'Издръжлив защитник на селото.',cost:{food:35,stone:15,gold:20},power:16,hp:140,attack:9,range:1.5,time:14},
+  swordsman:{name:'Swordsman',desc:'A balanced fighter for expeditions.',cost:{food:30,gold:20},power:18,hp:90,attack:12,range:1.5,time:10},
+  archer:{name:'Archer',desc:'Attacks from a distance.',cost:{food:25,wood:20,gold:15},power:15,hp:55,attack:10,range:5,time:12},
+  guard:{name:'Guard',desc:'A resilient village defender.',cost:{food:35,stone:15,gold:20},power:16,hp:140,attack:9,range:1.5,time:14},
 };
 export const CAMPS = [
-  {name:'Разбойнически лагер',desc:'Непредпазливи разбойници край старата мелница.',power:30,reward:{wood:100,stone:60,gold:70,food:60}},
-  {name:'Железният проход',desc:'Пазен проход високо в планината.',power:100,reward:{wood:180,stone:160,gold:140,food:120}},
-  {name:'Черната крепост',desc:'Последната крепост на северния владетел.',power:220,reward:{wood:300,stone:250,gold:300,food:180}},
+  {name:'Raider Camp',desc:'Careless raiders near the old mill.',power:30,reward:{wood:100,stone:60,gold:70,food:60}},
+  {name:'Iron Pass',desc:'A guarded pass high in the mountains.',power:100,reward:{wood:180,stone:160,gold:140,food:120}},
+  {name:'Black Fortress',desc:'The last stronghold of the northern ruler.',power:220,reward:{wood:300,stone:250,gold:300,food:180}},
 ];
 export function building(type,x,y,id=crypto.randomUUID()) {return {id,type,x,y,level:1,hp:BUILDINGS[type].hp,...(type==='market'?{tradeResource:null,tradeProgress:0}:{})};}
 export function terrain(x,y) {
@@ -94,13 +95,13 @@ export function projectedProduction(s){
 export function cropReady(c){return c.progress>=WHEAT_GROW_SECONDS;}
 export function canPlant(s,ownerId,x,y){
   const owner=s.buildings.find(b=>b.id===ownerId&&['farm','lumber'].includes(b.type)&&b.hp>0);
-  if(!owner)return 'Избери работеща ферма или дърварница.';
-  if(!Number.isInteger(x)||!Number.isInteger(y))return 'Избери квадратче на картата.';
+  if(!owner)return 'Select an operational farm or lumberyard.';
+  if(!Number.isInteger(x)||!Number.isInteger(y))return 'Select a map tile.';
   const limit=bounds(s);
-  if(x<limit.min||y<limit.min||x>=limit.max||y>=limit.max||terrain(x,y)!=='grass')return 'Засаждането трябва да е върху свободна земя във владението.';
-  if(s.buildings.some(b=>x>=b.x&&x<b.x+BUILDINGS[b.type].size&&y>=b.y&&y<b.y+BUILDINGS[b.type].size))return 'Тук вече има сграда или пътека.';
-  if((s.crops||[]).some(c=>c.x===x&&c.y===y))return 'Това квадратче вече е засято.';
-  if(cropCount(s,ownerId)>=cropCapacity(owner))return 'Всички квадратчета са заети. Прибери готовата реколта или надгради сградата.';
+  if(x<limit.min||y<limit.min||x>=limit.max||y>=limit.max||terrain(x,y)!=='grass')return 'Plant on empty ground within your territory.';
+  if(s.buildings.some(b=>x>=b.x&&x<b.x+BUILDINGS[b.type].size&&y>=b.y&&y<b.y+BUILDINGS[b.type].size))return 'A building or road already occupies this tile.';
+  if((s.crops||[]).some(c=>c.x===x&&c.y===y))return 'This plot is already planted.';
+  if(cropCount(s,ownerId)>=cropCapacity(owner))return 'All plots are occupied. Harvest mature crops or upgrade the building.';
   return null;
 }
 export function power(army){return Object.entries(army).reduce((n,[k,v])=>n+UNITS[k].power*v,0);}
@@ -114,20 +115,20 @@ function pay(s,cost){for(const [k,v] of Object.entries(cost))s.resources[k]-=v;}
 function log(s,message){s.logs=[{id:crypto.randomUUID(),message,time:s.time},...s.logs].slice(0,12);s.notice=message;}
 export function canPlace(s,type,x,y,ignoreId){
   const size=BUILDINGS[type].size,b=bounds(s);
-  if(x<b.min||y<b.min||x+size>b.max||y+size>b.max)return 'Извън територията. Разшири владението.';
-  for(let yy=y;yy<y+size;yy++)for(let xx=x;xx<x+size;xx++)if(terrain(xx,yy)!=='grass')return 'Тук има река или гора.';
-  if(s.buildings.some(other=>other.id!==ignoreId&&x<other.x+BUILDINGS[other.type].size&&x+size>other.x&&y<other.y+BUILDINGS[other.type].size&&y+size>other.y))return 'Мястото вече е заето.';
-  if((s.crops||[]).some(c=>c.x>=x&&c.x<x+size&&c.y>=y&&c.y<y+size))return 'Първо прибери реколтата от това място.';
+  if(x<b.min||y<b.min||x+size>b.max||y+size>b.max)return 'Outside your territory. Expand your domain.';
+  for(let yy=y;yy<y+size;yy++)for(let xx=x;xx<x+size;xx++)if(terrain(xx,yy)!=='grass')return 'There is a river or forest here.';
+  if(s.buildings.some(other=>other.id!==ignoreId&&x<other.x+BUILDINGS[other.type].size&&x+size>other.x&&y<other.y+BUILDINGS[other.type].size&&y+size>other.y))return 'This location is already occupied.';
+  if((s.crops||[]).some(c=>c.x>=x&&c.x<x+size&&c.y>=y&&c.y<y+size))return 'Harvest the crops here first.';
   if(type!=='road'&&!s.buildings.some(road=>{
     if(road.type!=='road'||road.hp<=0||road.id===ignoreId)return false;
     const beside=(road.x===x-1||road.x===x+size)&&road.y>=y&&road.y<y+size;
     const aboveOrBelow=(road.y===y-1||road.y===y+size)&&road.x>=x&&road.x<x+size;
     return beside||aboveOrBelow;
-  }))return 'Нужна е пътека до сградата. Постави пътека до поне една от страните ѝ.';
+  }))return 'A road is required next to the building. Place a road along at least one side.';
   return null;
 }
 export function initialState(){
- const s={version:1,wallHpVersion:2,time:0,resources:{wood:330,stone:280,food:240,gold:180},population:12,army:{swordsman:2,archer:1,guard:1},queue:[],buildings:[],crops:[],expansion:0,raidIn:RAID_INTERVAL_SECONDS,raidNumber:0,raidSide:null,raidRepairPending:false,gameOver:false,enemies:[],defenders:[],bolts:[],expedition:null,campaign:0,logs:[],notice:'Добре дошъл в Дъбов дол.',paused:false,quest:0,claimed:[],stats:{built:0,trained:0,victories:0},savedAt:Date.now()};
+ const s={version:1,wallHpVersion:2,time:0,resources:{wood:330,stone:280,food:240,gold:180},population:12,army:{swordsman:2,archer:1,guard:1},queue:[],buildings:[],crops:[],expansion:0,raidIn:RAID_INTERVAL_SECONDS,raidNumber:0,raidSide:null,raidRepairPending:false,gameOver:false,enemies:[],defenders:[],bolts:[],expedition:null,campaign:0,logs:[],notice:'Welcome to Oakvale.',paused:false,quest:0,claimed:[],stats:{built:0,trained:0,victories:0},savedAt:Date.now()};
  const entries=[['castle',21,18],['house',17,18],['house',25,20],['house',18,24],['farm',26,24],['farm',29,24],['lumber',16,24],['quarry',29,18],['barracks',25,16],['market',22,25],['tower',16,16],['tower',29,28]];
  for(const [t,x,y]of entries)s.buildings.push(building(t,x,y));
  for(let x=17;x<=28;x++)if(x!==22&&x!==23)s.buildings.push(building('wall',x,15));
@@ -148,14 +149,14 @@ export function loadState(storage=localStorage){
   if(!s||s.version!==1||!Array.isArray(s.buildings)||!s.buildings.some(b=>b.type==='castle')||!RESOURCES.every(k=>Number.isFinite(s.resources[k])&&s.resources[k]>=0)||!Number.isFinite(s.population)||!Object.keys(UNITS).every(k=>Number.isInteger(s.army[k])&&s.army[k]>=0)||!Array.isArray(s.queue)||!Array.isArray(s.logs)||!s.stats||!Array.isArray(s.claimed)||!s.buildings.every(b=>BUILDINGS[b.type]&&Number.isFinite(b.x)&&Number.isFinite(b.y)&&Number.isFinite(b.hp)&&b.level>=1&&b.level<=5))return initialState();
   const buildings=(s.wallHpVersion===2?s.buildings:s.buildings.map(b=>b.type==='wall'?{...b,hp:Math.min(maxHp(b),b.hp*2)}:b)).map(b=>b.type==='market'?{...b,tradeResource:MARKET_TRADES[b.tradeResource]?b.tradeResource:null,tradeProgress:Number.isInteger(b.tradeProgress)?Math.max(0,Math.min(MARKET_TRADE_SECONDS-1,b.tradeProgress)):0}:b);
   const crops=Array.isArray(s.crops)?s.crops.filter(c=>c&&typeof c.id==='string'&&s.buildings.some(b=>b.id===c.farmId&&['farm','lumber'].includes(b.type))&&Number.isInteger(c.x)&&Number.isInteger(c.y)&&Number.isFinite(c.progress)&&c.progress>=0).map(c=>({...c,kind:s.buildings.find(b=>b.id===c.farmId).type==='lumber'?'tree':'wheat'})):[];
-  return {...initialState(),...s,buildings,crops,raidIn:Number.isFinite(s.raidIn)?Math.max(1,Math.min(RAID_INTERVAL_SECONDS,s.raidIn)):RAID_INTERVAL_SECONDS,wallHpVersion:2,paused:false,bolts:[],notice:'Селището ти е запазено. Добре дошъл отново.'};
+  return {...initialState(),...s,buildings,crops,logs:s.logs.map(entry=>({...entry,message:translateLegacyMessage(entry.message)})),raidIn:Number.isFinite(s.raidIn)?Math.max(1,Math.min(RAID_INTERVAL_SECONDS,s.raidIn)):RAID_INTERVAL_SECONDS,wallHpVersion:2,paused:false,bolts:[],notice:'Your village is saved. Welcome back.'};
  }catch{return initialState();}
 }
 export function saveState(s,storage=localStorage){try{storage.setItem(SAVE_KEY,JSON.stringify({...s,savedAt:Date.now()}));return true;}catch{return false;}}
 function center(b){return {x:b.x+BUILDINGS[b.type].size/2,y:b.y+BUILDINGS[b.type].size/2};}
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
 export const RAID_SIDES=['north','east','south','west'];
-export const RAID_SIDE_NAMES={north:'север',east:'изток',south:'юг',west:'запад'};
+export const RAID_SIDE_NAMES={north:'north',east:'east',south:'south',west:'west'};
 export function raidSpawnPoint(s,side,index){
  const area=bounds(s),castle=s.buildings.find(b=>b.type==='castle'),target=center(castle),blocked=blockedTiles(s.buildings,BUILDINGS);
  for(let depth=0;depth<area.max-area.min;depth++){
@@ -172,7 +173,7 @@ export function raidSpawnPoint(s,side,index){
  }
  return {x:target.x,y:target.y};
 }
-function startRaid(s){s.raidRepairPending=false;s.raidNumber++;const side=RAID_SIDES[Math.floor(Math.random()*RAID_SIDES.length)];s.raidSide=side;const count=3+s.raidNumber*2;s.enemies=Array.from({length:count},(_,i)=>({id:crypto.randomUUID(),...raidSpawnPoint(s,side,i),hp:55+s.raidNumber*12,maxHp:55+s.raidNumber*12}));s.defenders=[];for(const [type,n]of Object.entries(s.army))for(let i=0;i<n;i++)s.defenders.push({id:crypto.randomUUID(),type,x:22+i%3,y:22+Math.floor(i/3),hp:UNITS[type].hp});log(s,`Набег! ${count} разбойници идват от ${RAID_SIDE_NAMES[side]}.`);}
+function startRaid(s){s.raidRepairPending=false;s.raidNumber++;const side=RAID_SIDES[Math.floor(Math.random()*RAID_SIDES.length)];s.raidSide=side;const count=3+s.raidNumber*2;s.enemies=Array.from({length:count},(_,i)=>({id:crypto.randomUUID(),...raidSpawnPoint(s,side,i),hp:55+s.raidNumber*12,maxHp:55+s.raidNumber*12}));s.defenders=[];for(const [type,n]of Object.entries(s.army))for(let i=0;i<n;i++)s.defenders.push({id:crypto.randomUUID(),type,x:22+i%3,y:22+Math.floor(i/3),hp:UNITS[type].hp});log(s,`Raid! ${count} raiders are approaching from ${RAID_SIDE_NAMES[side]}.`);}
 function combat(s){
  s.bolts=[];const blocked=blockedTiles(s.buildings,BUILDINGS);
  for(const d of s.defenders){d.prevX=d.x;d.prevY=d.y;if(d.hp<=0)continue;const targets=s.enemies.filter(e=>e.hp>0),e=targets.sort((a,b)=>dist(a,d)-dist(b,d))[0];if(!e)break;const def=UNITS[d.type],dd=dist(d,e);if(dd<=def.range){e.hp-=def.attack;if(def.range>2)s.bolts.push({from:{...d},to:{...e}});}else{const route=findRoute(d,(x,y)=>targets.find(target=>dist({x,y},target)<=def.range),blocked,SIZE);if(route)moveAlongRoute(d,route.path,0.55);}}
@@ -185,10 +186,10 @@ function combat(s){
  if(route)moveAlongRoute(e,route.path,0.4);
  }
  for(const d of s.defenders.filter(d=>d.hp<=0)){s.army[d.type]=Math.max(0,s.army[d.type]-1);s.population=Math.max(0,s.population-1);}s.defenders=s.defenders.filter(d=>d.hp>0);s.enemies=s.enemies.filter(e=>e.hp>0);
- if(!s.buildings.some(b=>b.type==='castle'&&b.hp>0)){s.gameOver=true;s.enemies=[];s.defenders=[];s.bolts=[];log(s,'Главният замък беше разрушен. Играта приключи.');}
- else if(!s.enemies.length){s.defenders=[];s.raidSide=null;s.raidRepairPending=true;const reward=raidReward(s.raidNumber);for(const [resource,amount]of Object.entries(reward))s.resources[resource]=Math.min(99999,s.resources[resource]+amount);log(s,`Набегът е отблъснат. +${reward.gold} злато, +${reward.wood} дърво, +${reward.stone} камък и +${reward.food} храна.`);}
+ if(!s.buildings.some(b=>b.type==='castle'&&b.hp>0)){s.gameOver=true;s.enemies=[];s.defenders=[];s.bolts=[];log(s,'The main castle was destroyed. Game over.');}
+ else if(!s.enemies.length){s.defenders=[];s.raidSide=null;s.raidRepairPending=true;const reward=raidReward(s.raidNumber);for(const [resource,amount]of Object.entries(reward))s.resources[resource]=Math.min(99999,s.resources[resource]+amount);log(s,`Raid repelled. +${reward.gold} gold, +${reward.wood} wood, +${reward.stone} stone and +${reward.food} food.`);}
 }
-export const QUESTS=[{title:'Нови корени',desc:'Построй първата си сграда.',goal:1,stat:'built',reward:{wood:75,gold:40}},{title:'Под знамената',desc:'Обучи 3 нови войници.',goal:3,stat:'trained',reward:{food:100,gold:80}},{title:'Отвъд стените',desc:'Спечели първия си поход.',goal:1,stat:'victories',reward:{stone:150,gold:100}}];
+export const QUESTS=[{title:'New roots',desc:'Build your first building.',goal:1,stat:'built',reward:{wood:75,gold:40}},{title:'Under the banners',desc:'Train 3 new soldiers.',goal:3,stat:'trained',reward:{food:100,gold:80}},{title:'Beyond the walls',desc:'Win your first expedition.',goal:1,stat:'victories',reward:{stone:150,gold:100}}];
 export function reducer(state,a){
  if(a.type==='RESET')return a.state||initialState();
  if(state.gameOver)return state;
@@ -197,43 +198,43 @@ export function reducer(state,a){
  if(a.type==='TICK'&&state.paused)return state;
  const s=structuredClone(state);
  const fail=m=>({...state,notice:m});
- if(a.type==='BUILD'){if(!BUILDINGS[a.kind]||a.kind==='castle')return state;const reason=canPlace(s,a.kind,a.x,a.y);if(reason)return fail(reason);if(!canAfford(s,BUILDINGS[a.kind].cost))return fail('Нямаш достатъчно ресурси за тази сграда.');pay(s,BUILDINGS[a.kind].cost);s.buildings.push(building(a.kind,a.x,a.y));if(a.kind!=='road'&&a.kind!=='wall')s.stats.built++;log(s,`${BUILDINGS[a.kind].name} е построена.`);}
- if(a.type==='PLANT'){const reason=canPlant(s,a.farmId,a.x,a.y);if(reason)return fail(reason);const owner=s.buildings.find(b=>b.id===a.farmId),tree=owner.type==='lumber';s.crops.push({id:crypto.randomUUID(),farmId:a.farmId,kind:tree?'tree':'wheat',x:a.x,y:a.y,progress:0});log(s,owner.level>=3?`${tree?'Дървото':'Житото'} е засадено и ще се прибира автоматично.`:tree?'Дървото е засадено. Прибери го, когато порасне.':'Житото е засято. Прибери го, когато узрее.');}
+ if(a.type==='BUILD'){if(!BUILDINGS[a.kind]||a.kind==='castle')return state;const reason=canPlace(s,a.kind,a.x,a.y);if(reason)return fail(reason);if(!canAfford(s,BUILDINGS[a.kind].cost))return fail('Not enough resources for this building.');pay(s,BUILDINGS[a.kind].cost);s.buildings.push(building(a.kind,a.x,a.y));if(a.kind!=='road'&&a.kind!=='wall')s.stats.built++;log(s,`${BUILDINGS[a.kind].name} built.`);}
+ if(a.type==='PLANT'){const reason=canPlant(s,a.farmId,a.x,a.y);if(reason)return fail(reason);const owner=s.buildings.find(b=>b.id===a.farmId),tree=owner.type==='lumber';s.crops.push({id:crypto.randomUUID(),farmId:a.farmId,kind:tree?'tree':'wheat',x:a.x,y:a.y,progress:0});log(s,owner.level>=3?`${tree?'Tree':'Wheat'} planted and will be harvested automatically.`:tree?'Tree planted. Harvest it when mature.':'Wheat planted. Harvest it when ripe.');}
  if(a.type==='SET_TRADE'){
   const market=s.buildings.find(b=>b.id===a.id&&b.type==='market');
   if(!market||a.resource!==null&&!MARKET_TRADES[a.resource])return state;
   if(market.tradeResource===a.resource)return state;
   market.tradeResource=a.resource;market.tradeProgress=0;
-  log(s,a.resource?`Пазарът ще продава ${NAMES[a.resource].toLowerCase()} срещу злато.`:'Търговията на пазара е спряна.');
+  log(s,a.resource?`The market will sell ${NAMES[a.resource].toLowerCase()} for gold.`:'Market trading stopped.');
  }
- if(a.type==='HARVEST'){const crop=s.crops.find(c=>c.id===a.id);if(!crop)return state;const owner=s.buildings.find(b=>b.id===crop.farmId);if(!owner||owner.hp<=0)return fail('Първо възстанови сградата.');const tree=owner.type==='lumber';if(!cropReady(crop))return fail(`${tree?'Дървото ще порасне':'Житото ще узрее'} след още ${Math.ceil(WHEAT_GROW_SECONDS-crop.progress)} сек. при пълен екип.`);const resource=tree?'wood':'food',amount=tree?TREE_YIELD:WHEAT_YIELD;s.resources[resource]=Math.min(99999,s.resources[resource]+amount);if(owner.level>=3)crop.progress=0;else s.crops=s.crops.filter(c=>c.id!==a.id);log(s,owner.level>=3?`${tree?'Дървото':'Житото'} е прибрано. +${amount} ${tree?'дърво':'храна'} и нов посев на същото място.`:`${tree?'Дървото':'Житото'} е прибрано. +${amount} ${tree?'дърво':'храна'}. Квадратчето отново е свободно.`);}
+ if(a.type==='HARVEST'){const crop=s.crops.find(c=>c.id===a.id);if(!crop)return state;const owner=s.buildings.find(b=>b.id===crop.farmId);if(!owner||owner.hp<=0)return fail('Restore the building first.');const tree=owner.type==='lumber';if(!cropReady(crop))return fail(`${tree?'The tree will mature':'The wheat will ripen'} in ${Math.ceil(WHEAT_GROW_SECONDS-crop.progress)} seconds with a full workforce.`);const resource=tree?'wood':'food',amount=tree?TREE_YIELD:WHEAT_YIELD;s.resources[resource]=Math.min(99999,s.resources[resource]+amount);if(owner.level>=3)crop.progress=0;else s.crops=s.crops.filter(c=>c.id!==a.id);log(s,owner.level>=3?`${tree?'Tree':'Wheat'} harvested. +${amount} ${tree?'wood':'food'} and replanted in the same plot.`:`${tree?'Tree':'Wheat'} harvested. +${amount} ${tree?'wood':'food'}. The plot is free again.`);}
  if(a.type==='REMOVE_CROP'){
   const owner=s.buildings.find(b=>b.id===a.farmId&&['farm','lumber'].includes(b.type));
   const crop=s.crops.find(c=>c.id===a.id&&c.farmId===a.farmId);
   if(!owner||!crop)return state;
   s.crops=s.crops.filter(c=>c.id!==crop.id);
-  log(s,owner.type==='lumber'?'Дървото е премахнато. Квадратчето е свободно.':'Житото е премахнато. Квадратчето е свободно.');
+  log(s,owner.type==='lumber'?'Tree removed. The plot is free.':'Wheat removed. The plot is free.');
  }
  if(a.type==='REPAIR_ALL'){
   if(!s.raidRepairPending)return state;
-  if(s.enemies.length)return fail('Изчакай края на набега, за да ремонтираш.');
+  if(s.enemies.length)return fail('Wait until the raid ends to repair buildings.');
   const cost=repairAllCost(s);
-  if(!canAfford(s,cost))return fail(`Не достигат ${cost.wood-s.resources.wood} дърво за всички ремонти.`);
+  if(!canAfford(s,cost))return fail(`Missing ${cost.wood-s.resources.wood} wood for all repairs.`);
   const count=s.buildings.filter(b=>b.hp<maxHp(b)).length;
   pay(s,cost);for(const b of s.buildings)if(b.hp<maxHp(b))b.hp=maxHp(b);
-  s.raidRepairPending=false;log(s,count?`Поправени са ${count} сгради за ${cost.wood} дърво.`:'Няма сгради за поправяне.');
+  s.raidRepairPending=false;log(s,count?`Repaired ${count} buildings for ${cost.wood} wood.`:'No buildings need repairs.');
  }
  if(a.type==='DISMISS_REPAIR'){s.raidRepairPending=false;}
  if(['UPGRADE','MOVE','DEMOLISH','REPAIR'].includes(a.type)){const b=s.buildings.find(b=>b.id===a.id);if(!b)return state;
- if(a.type==='UPGRADE'){const castle=s.buildings.find(c=>c.type==='castle');if(b.hp<=0)return fail('Първо възстанови сградата.');if(b.level>=BUILDINGS[b.type].max)return fail('Достигнато е максималното ниво.');if(b.type!=='castle'&&b.level>=castle.level)return fail('Първо надгради главния замък.');const cost=upgradeCost(b);if(!canAfford(s,cost))return fail('Нямаш достатъчно ресурси за подобрението.');pay(s,cost);b.level++;b.hp=maxHp(b);log(s,`${BUILDINGS[b.type].name} вече е ниво ${b.level}.`);}
- if(a.type==='MOVE'){if(s.enemies.length)return fail('Не можеш да местиш сгради по време на набег.');const reason=canPlace(s,b.type,a.x,a.y,b.id);if(reason)return fail(reason);b.x=a.x;b.y=a.y;log(s,'Сградата е преместена.');}
- if(a.type==='DEMOLISH'){if(b.type==='castle')return fail('Главният замък не може да се премахва.');if(s.enemies.length)return fail('Не можеш да премахваш сгради по време на набег.');s.buildings=s.buildings.filter(v=>v.id!==b.id);if(['farm','lumber'].includes(b.type))s.crops=s.crops.filter(c=>c.farmId!==b.id);for(const [k,v]of Object.entries(BUILDINGS[b.type].cost))s.resources[k]+=Math.floor(v*0.5);log(s,'Сградата е премахната. Върнати са 50% от основната цена.');}
- if(a.type==='REPAIR'){const cost={wood:repairCost(b)};if(s.enemies.length)return fail('Изчакай края на набега, за да ремонтираш.');if(!canAfford(s,cost))return fail('Не достига дърво за ремонт.');pay(s,cost);b.hp=maxHp(b);log(s,'Сградата е възстановена.');}}
- if(a.type==='TRAIN'){const def=UNITS[a.kind],b=s.buildings.find(b=>b.type==='barracks'&&b.hp>0);if(!def||!b)return fail('Нужна е работеща казарма.');if(s.enemies.length)return fail('Обучението е недостъпно по време на набег.');if(s.queue.length>=5)return fail('Опашката е пълна. Изчакай завършване на обучението.');if(workers(s)<1)return fail('Няма свободни жители. Построй къщи и изчакай нови заселници.');if(!canAfford(s,def.cost))return fail('Не достигат ресурси за обучението.');pay(s,def.cost);const duration=Math.ceil(def.time/b.level);s.queue.push({id:crypto.randomUUID(),type:a.kind,remaining:duration,total:duration});log(s,`${def.name} започна обучение.`);}
- if(a.type==='EXPAND'){const castle=s.buildings.find(b=>b.type==='castle');if(s.expansion>=3)return fail('Владението е разширено напълно.');const requiredLevel=requiredCastleLevelForExpansion(s.expansion);if(castle.level<requiredLevel)return fail(`Нужен е Главен замък ниво ${requiredLevel} за следващото разширение.`);const cost={wood:150*(s.expansion+1),stone:100*(s.expansion+1),gold:80*(s.expansion+1)};if(!canAfford(s,cost))return fail('Не достигат ресурси за разширението.');pay(s,cost);s.expansion++;log(s,'Владението е разширено с 3 полета във всяка посока.');}
- if(a.type==='EXPEDITION'){if(s.expedition||s.enemies.length)return fail('Изчакай текущата битка.');if(power(s.army)===0)return fail('Обучи войници преди похода.');if(!Number.isInteger(a.camp)||a.camp<0||a.camp>=CAMPS.length||a.camp>s.campaign)return fail('Този лагер още не е отключен.');if(s.raidIn<30)return fail('Набегът е близо. Защити селището първо.');s.expedition={camp:a.camp,army:{...s.army},remaining:20,total:20};s.army={swordsman:0,archer:0,guard:0};log(s,'Армията потегли на поход.');}
- if(a.type==='RAID'){if(s.enemies.length||s.expedition)return fail('Вече има активна битка.');if(!s.buildings.some(b=>b.type==='castle'&&b.hp>0))return fail('Първо възстанови замъка.');startRaid(s);s.raidIn=RAID_INTERVAL_SECONDS;}
- if(a.type==='CLAIM'){const q=QUESTS[a.index];if(!q||s.claimed.includes(a.index)||s.stats[q.stat]<q.goal)return state;for(const [k,v]of Object.entries(q.reward))s.resources[k]+=v;s.claimed.push(a.index);log(s,'Наградата от задачата е получена.');}
+ if(a.type==='UPGRADE'){const castle=s.buildings.find(c=>c.type==='castle');if(b.hp<=0)return fail('Restore the building first.');if(b.level>=BUILDINGS[b.type].max)return fail('Maximum level reached.');if(b.type!=='castle'&&b.level>=castle.level)return fail('Upgrade the main castle first.');const cost=upgradeCost(b);if(!canAfford(s,cost))return fail('Not enough resources for this upgrade.');pay(s,cost);b.level++;b.hp=maxHp(b);log(s,`${BUILDINGS[b.type].name} is now level ${b.level}.`);}
+ if(a.type==='MOVE'){if(s.enemies.length)return fail('Cannot move buildings during a raid.');const reason=canPlace(s,b.type,a.x,a.y,b.id);if(reason)return fail(reason);b.x=a.x;b.y=a.y;log(s,'Building moved.');}
+ if(a.type==='DEMOLISH'){if(b.type==='castle')return fail('The main castle cannot be removed.');if(s.enemies.length)return fail('Cannot remove buildings during a raid.');s.buildings=s.buildings.filter(v=>v.id!==b.id);if(['farm','lumber'].includes(b.type))s.crops=s.crops.filter(c=>c.farmId!==b.id);for(const [k,v]of Object.entries(BUILDINGS[b.type].cost))s.resources[k]+=Math.floor(v*0.5);log(s,'Building removed. Refunded 50% of the base cost.');}
+ if(a.type==='REPAIR'){const cost={wood:repairCost(b)};if(s.enemies.length)return fail('Wait until the raid ends to repair buildings.');if(!canAfford(s,cost))return fail('Not enough wood for repairs.');pay(s,cost);b.hp=maxHp(b);log(s,'Building restored.');}}
+ if(a.type==='TRAIN'){const def=UNITS[a.kind],b=s.buildings.find(b=>b.type==='barracks'&&b.hp>0);if(!def||!b)return fail('An operational barracks is required.');if(s.enemies.length)return fail('Training is unavailable during a raid.');if(s.queue.length>=5)return fail('The queue is full. Wait for training to finish.');if(workers(s)<1)return fail('No unassigned residents. Build houses and wait for new settlers.');if(!canAfford(s,def.cost))return fail('Not enough resources for training.');pay(s,def.cost);const duration=Math.ceil(def.time/b.level);s.queue.push({id:crypto.randomUUID(),type:a.kind,remaining:duration,total:duration});log(s,`${def.name} started training.`);}
+ if(a.type==='EXPAND'){const castle=s.buildings.find(b=>b.type==='castle');if(s.expansion>=3)return fail('Your territory is fully expanded.');const requiredLevel=requiredCastleLevelForExpansion(s.expansion);if(castle.level<requiredLevel)return fail(`Requires main castle level ${requiredLevel} for the next expansion.`);const cost={wood:150*(s.expansion+1),stone:100*(s.expansion+1),gold:80*(s.expansion+1)};if(!canAfford(s,cost))return fail('Not enough resources for expansion.');pay(s,cost);s.expansion++;log(s,'Territory expanded by 3 tiles in every direction.');}
+ if(a.type==='EXPEDITION'){if(s.expedition||s.enemies.length)return fail('Wait for the current battle to end.');if(power(s.army)===0)return fail('Train soldiers before an expedition.');if(!Number.isInteger(a.camp)||a.camp<0||a.camp>=CAMPS.length||a.camp>s.campaign)return fail('This camp is still locked.');if(s.raidIn<30)return fail('A raid is approaching. Defend your village first.');s.expedition={camp:a.camp,army:{...s.army},remaining:20,total:20};s.army={swordsman:0,archer:0,guard:0};log(s,'The army set out on an expedition.');}
+ if(a.type==='RAID'){if(s.enemies.length||s.expedition)return fail('A battle is already in progress.');if(!s.buildings.some(b=>b.type==='castle'&&b.hp>0))return fail('Restore the castle first.');startRaid(s);s.raidIn=RAID_INTERVAL_SECONDS;}
+ if(a.type==='CLAIM'){const q=QUESTS[a.index];if(!q||s.claimed.includes(a.index)||s.stats[q.stat]<q.goal)return state;for(const [k,v]of Object.entries(q.reward))s.resources[k]+=v;s.claimed.push(a.index);log(s,'Quest reward claimed.');}
  if(a.type==='TICK'){
   s.time++;const assignments=staffing(s);for(const crop of s.crops){const owner=s.buildings.find(b=>b.id===crop.farmId);if(owner?.hp<=0||!owner)continue;const automatic=owner.level>=3&&['farm','lumber'].includes(owner.type);if(!cropReady(crop))crop.progress=Math.min(WHEAT_GROW_SECONDS,crop.progress+(assignments[crop.farmId]?.efficiency||0));if(automatic&&cropReady(crop)){const resource=owner.type==='lumber'?'wood':'food',amount=owner.type==='lumber'?TREE_YIELD:WHEAT_YIELD;s.resources[resource]=Math.min(99999,s.resources[resource]+amount);crop.progress=0;}}const rates=production(s);for(const k of RESOURCES)s.resources[k]=Math.min(99999,Math.max(0,s.resources[k]+rates[k]));
   for(const market of s.buildings){
@@ -246,9 +247,9 @@ export function reducer(state,a){
    if(s.resources[resource]>=trade.cost){s.resources[resource]-=trade.cost;s.resources.gold=Math.min(99999,s.resources.gold+trade.gold);}
   }
   if(s.time%18===0&&s.population<capacity(s)&&s.resources.food>=15){s.population++;s.resources.food-=15;}
-  if(s.time%30===0&&s.resources.food<1&&workers(s)>0){s.population--;log(s,'Няма храна. Един жител напусна селището.');}
-  if(s.queue.length&&s.buildings.some(b=>b.type==='barracks'&&b.hp>0)&&!s.enemies.length){s.queue[0].remaining--;if(s.queue[0].remaining<=0){const u=s.queue.shift();s.army[u.type]++;s.stats.trained++;log(s,`${UNITS[u.type].name} се присъедини към армията.`);}}
-  if(s.expedition){s.expedition.remaining--;if(s.expedition.remaining<=0){const e=s.expedition,camp=CAMPS[e.camp],won=power(e.army)>=camp.power;const loss=won?Math.min(0.45,camp.power/Math.max(1,power(e.army))*0.35):0.65;let casualties=0;for(const [k,v]of Object.entries(e.army)){const dead=Math.min(v,Math.floor(v*loss));s.army[k]+=v-dead;casualties+=dead;}s.population-=casualties;if(won){for(const[k,v]of Object.entries(camp.reward))s.resources[k]+=v;s.stats.victories++;s.campaign=Math.max(s.campaign,Math.min(2,e.camp+1));}log(s,won?`Победа при ${camp.name}! Плячката пристигна. Загубени войници: ${casualties}.`:`Отстъпление от ${camp.name}. Обучи по-силна армия. Загубени войници: ${casualties}.`);s.expedition=null;}}
+  if(s.time%30===0&&s.resources.food<1&&workers(s)>0){s.population--;log(s,'No food left. A resident left the village.');}
+  if(s.queue.length&&s.buildings.some(b=>b.type==='barracks'&&b.hp>0)&&!s.enemies.length){s.queue[0].remaining--;if(s.queue[0].remaining<=0){const u=s.queue.shift();s.army[u.type]++;s.stats.trained++;log(s,`${UNITS[u.type].name} joined the army.`);}}
+  if(s.expedition){s.expedition.remaining--;if(s.expedition.remaining<=0){const e=s.expedition,camp=CAMPS[e.camp],won=power(e.army)>=camp.power;const loss=won?Math.min(0.45,camp.power/Math.max(1,power(e.army))*0.35):0.65;let casualties=0;for(const [k,v]of Object.entries(e.army)){const dead=Math.min(v,Math.floor(v*loss));s.army[k]+=v-dead;casualties+=dead;}s.population-=casualties;if(won){for(const[k,v]of Object.entries(camp.reward))s.resources[k]+=v;s.stats.victories++;s.campaign=Math.max(s.campaign,Math.min(2,e.camp+1));}log(s,won?`Victory at ${camp.name}! Loot delivered. Soldiers lost: ${casualties}.`:`Retreat from ${camp.name}. Train a stronger army. Soldiers lost: ${casualties}.`);s.expedition=null;}}
   if(s.enemies.length)combat(s);else if(s.buildings.some(b=>b.type==='castle'&&b.hp>0)){s.raidIn--;if(s.raidIn<=0){if(!s.expedition){startRaid(s);s.raidIn=RAID_INTERVAL_SECONDS;}else s.raidIn=5;}}
  }
  return s;

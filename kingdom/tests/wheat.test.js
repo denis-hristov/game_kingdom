@@ -28,11 +28,11 @@ test('planting each plot uses one slot, respects territory, and rejects occupied
  let s=farmVillage();const farmId=s.buildings[0].id;
  for(let i=0;i<5;i++)s=reducer(s,{type:'PLANT',farmId,x:15+i,y:15});
  assert.equal(cropCount(s,farmId),5);
- const full=s;assert.match(canPlant(s,farmId,15,16),/Всички квадратчета/);
+ const full=s;assert.match(canPlant(s,farmId,15,16),/All plots/);
  s=reducer(s,{type:'PLANT',farmId,x:15,y:16});assert.equal(s.crops.length,5);assert.deepEqual(s.resources,full.resources);
- assert.match(canPlant(s,farmId,20,20),/сграда/);
- assert.match(canPlant(s,farmId,15,15),/засято/);
- assert.match(canPlant(s,farmId,11,11),/владението/);
+ assert.match(canPlant(s,farmId,20,20),/building/);
+ assert.match(canPlant(s,farmId,15,15),/planted/);
+ assert.match(canPlant(s,farmId,11,11),/territory/);
 });
 
 test('full team ripens wheat in 45 ticks; harvest gives exactly 5 food once and frees plot',()=>{

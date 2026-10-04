@@ -101,7 +101,7 @@ export default function World({state,dispatch,buildType,moveId,plantFarmId,clear
     return;
    }
    if(p.drag)return;
-   if(v.moveId){const b=v.state.buildings.find(b=>b.id===v.moveId);if(b&&!canPlace(v.state,b.type,t.x,t.y,b.id)){v.dispatch({type:'MOVE',id:b.id,...t});v.onMoveDone();}else v.dispatch({type:'NOTICE',message:b?canPlace(v.state,b.type,t.x,t.y,b.id):'Избери сграда.'});}else if(v.buildType){v.dispatch({type:'BUILD',kind:v.buildType,...t});}else{
+   if(v.moveId){const b=v.state.buildings.find(b=>b.id===v.moveId);if(b&&!canPlace(v.state,b.type,t.x,t.y,b.id)){v.dispatch({type:'MOVE',id:b.id,...t});v.onMoveDone();}else v.dispatch({type:'NOTICE',message:b?canPlace(v.state,b.type,t.x,t.y,b.id):'Select a building.'});}else if(v.buildType){v.dispatch({type:'BUILD',kind:v.buildType,...t});}else{
    const crop=v.state.crops.find(c=>c.x===t.x&&c.y===t.y);if(crop){v.dispatch({type:'HARVEST',id:crop.id});return;}
    const rect=canvas.getBoundingClientRect(),cam=camera.current,wx=(e.clientX-rect.left-size.current.w/2)/cam.zoom+cam.x,wy=(e.clientY-rect.top-size.current.h/2)/cam.zoom+cam.y;
    const ordered=[...v.state.buildings].sort((a,b)=>(b.y+BUILDINGS[b.type].size)-(a.y+BUILDINGS[a.type].size));
@@ -147,5 +147,5 @@ export default function World({state,dispatch,buildType,moveId,plantFarmId,clear
   return()=>{cancelAnimationFrame(frame);observer.disconnect();canvas.removeEventListener('pointerdown',down);canvas.removeEventListener('pointermove',move);canvas.removeEventListener('pointerup',up);canvas.removeEventListener('pointercancel',cancel);canvas.removeEventListener('wheel',wheel);};
  },[]);
  function adjust(amount){camera.current.zoom=Math.max(.45,Math.min(1.8,camera.current.zoom+amount));setZoom(Math.round(camera.current.zoom*100));}
- return <><canvas ref={ref} className={'world '+(buildType||moveId||plantFarmId||clearFarmId?'placing':'')} aria-label="Карта на селището. Влачи за движение. Натисни или влачи през готово жито и дървета, за да ги прибереш. В режим премахване можеш да освобождаваш засадените квадратчета."/><div className="map-controls"><button title="Отдалечаване" aria-label="Отдалечаване" onClick={()=>adjust(-.15)}>−</button><span>{zoom}%</span><button title="Приближаване" aria-label="Приближаване" onClick={()=>adjust(.15)}>+</button><i/><button className={grid?'on':''} title="Показване на мрежата" aria-label="Показване на мрежата" onClick={()=>setGrid(!grid)}>▦</button></div></>;
+ return <><canvas ref={ref} className={'world '+(buildType||moveId||plantFarmId||clearFarmId?'placing':'')} aria-label="Village map. Drag to pan. Click or drag across mature wheat and trees to harvest them. In removal mode, clear planted plots."/><div className="map-controls"><button title="Zoom out" aria-label="Zoom out" onClick={()=>adjust(-.15)}>−</button><span>{zoom}%</span><button title="Zoom in" aria-label="Zoom in" onClick={()=>adjust(.15)}>+</button><i/><button className={grid?'on':''} title="Toggle grid" aria-label="Toggle grid" onClick={()=>setGrid(!grid)}>▦</button></div></>;
 }

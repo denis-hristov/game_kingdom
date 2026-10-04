@@ -38,7 +38,7 @@ test('victory rewards all four resources and grows each wave by two percent',()=
   assert.equal(state.enemies.length,0);
   assert.equal(state.resources.gold,before.gold+.12+reward.gold);
   for(const resource of ['wood','stone','food'])assert.equal(state.resources[resource],before[resource]+reward[resource]);
-  assert.match(state.notice,new RegExp(`\\+${reward.gold} злато`));
+  assert.match(state.notice,new RegExp(`\\+${reward.gold} gold`));
  }
 });
 

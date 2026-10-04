@@ -1,111 +1,121 @@
-# Дъбов дол
+# Oakvale Kingdom
 
-Дъбов дол е single-player браузърна стратегическа игра, в която изграждаш и развиваш собствено средновековно селище. Събираш ресурси, осигуряваш работа и домове за жителите, разширяваш територията си, обучаваш армия и защитаваш замъка от все по-силни вражески набези.
+Build a village. Grow a kingdom. Defend what you create.
 
-Играта е локален прототип, създаден с React, Vite и HTML Canvas. Не изисква регистрация, сървър или външни игрови услуги.
+Oakvale Kingdom is a single-player browser strategy game set in a medieval world. Start with a small settlement and turn it into a thriving kingdom by gathering resources, housing residents, assigning workers, training soldiers, and defending your castle against increasingly powerful raids.
 
-## Основни възможности
+The game is a local prototype built with React, Vite, and HTML Canvas. No account or game server is required.
 
-* Изграждане и подобряване на къщи, ферми, дърварници, каменоломни, пазари, казарми, стени, кули и пътища
-* Управление на храна, дърво, камък, злато, население и работници
-* Засаждане и събиране на жито и дървета
-* Автоматична търговия чрез пазара
-* Обучение на войници и защита при периодични нападения
-* Военни походи, награди и разширяване на владението
-* Поправка, преместване и премахване на постройки
-* Автоматично локално запазване на прогреса
+## Features
 
-## Необходими програми
+* Build and upgrade houses, farms, lumberyards, quarries, markets, barracks, walls, towers, and roads.
+* Manage food, wood, stone, gold, population, and workers.
+* Plant wheat and trees, harvest them manually, and unlock automatic harvesting at level 3.
+* Sell resources for gold through automatic market trades.
+* Train swordsmen, archers, and guards to defend your village.
+* Send your army on expeditions to earn loot and unlock enemy camps.
+* Upgrade the castle and expand your territory.
+* Move, repair, and remove buildings.
+* Save your progress automatically in your browser.
 
-Преди да започнеш, инсталирай:
+## Requirements
 
-* [Git](https://git-scm.com/downloads)
-* [Node.js](https://nodejs.org/) версия 20.19 или по-нова
+* [Node.js](https://nodejs.org/) 20.19+ on the 20.x release line, or 22.12+ on newer release lines, as required by Vite 7. Use a current LTS release.
+* npm, included with Node.js.
+* A modern browser.
+* [Git](https://git-scm.com/downloads), if you want to clone the repository.
 
-Node.js включва и пакетния мениджър npm.
+## Download
 
-## Изтегляне
-
-Отвори Terminal, PowerShell или друг команден ред и изпълни:
+Clone the repository and enter the game directory:
 
 ```bash
 git clone https://github.com/denis-hristov/game_kingdom.git
 cd game_kingdom/kingdom
 ```
 
-Можеш да изтеглиш проекта и без Git чрез бутона Code, след това Download ZIP в GitHub. Разархивирай файла и отвори папката `kingdom` в команден ред.
+Alternatively, select **Code → Download ZIP** on GitHub, extract the archive, and open a terminal in the extracted `kingdom` folder.
 
-## Инсталиране и стартиране
+## Install and run
 
-Инсталирай необходимите пакети:
+Install the dependencies:
 
 ```bash
 npm install
 ```
 
-Стартирай играта:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-Отвори адреса, който Vite покаже в командния ред. Обикновено това е `http://127.0.0.1:5173`.
+Open the address printed in the terminal, usually [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the terminal running while you play. Press `Ctrl + C` to stop the server.
 
-За да спреш локалния сървър, натисни `Ctrl + C` в командния ред.
+All npm commands in this README should be run from the `kingdom` directory.
 
-## Управление
+## How to play
 
-* Влачи картата с мишка или пръст, за да я преместиш
-* Използвай колелцето на мишката или бутоните за мащабиране
-* Натисни Строене, избери постройка и посочи свободна клетка
-* Натисни съществуваща сграда, за да я подобриш, преместиш, поправиш или премахнеш
-* Натисни `Escape`, за да излезеш от активния режим
-* Натисни `Space`, за да поставиш играта на пауза
+* Drag the map with a mouse or finger to move around.
+* Zoom with the mouse wheel or the on-screen zoom buttons.
+* Click **Build**, choose a building, and select an empty tile.
+* Buildings need an operational road directly beside at least one edge. A diagonal road does not count.
+* Click a building to upgrade, move, repair, or remove it.
+* Select a farm or lumberyard to plant wheat or trees. Click or drag across mature crops to harvest them.
+* Open **Village** to manage your settlement and **Army** to train soldiers or launch expeditions.
+* Press `Escape` to cancel the active mode and `Space` to pause or resume.
 
-Сградите трябва да имат непосредствен достъп до работещ път. Зелената маркировка показва позволено място за строеж.
+Raids arrive every 60 seconds, or immediately when you click **Start now**. Protect the main castle: if it falls, the game ends.
 
-## Запазване на прогреса
+## Saving your progress
 
-Играта запазва автоматично на всеки 5 секунди и при затваряне. Данните се съхраняват в `localStorage` на използвания браузър. Прогресът не се синхронизира между различни браузъри или устройства и може да бъде загубен при изчистване на данните на сайта.
+The game saves every 5 seconds and when you leave the page. You can also click **Save**.
 
-## Production версия
+Progress is stored in `localStorage` for the current browser and site address. It does not sync across devices, browsers, or different ports. Clearing site data may delete your save. The game does not advance while closed, and background tabs may slow its timers.
 
-За създаване на оптимизирана версия изпълни:
+Existing saves remain compatible with the English version, including translated chronicle entries.
+
+## Production build
 
 ```bash
 npm run build
 ```
 
-Готовите файлове ще бъдат създадени в папка `kingdom/dist`.
+The optimized static files are generated in `kingdom/dist` relative to the repository root. Serve this folder with a static web server or deploy it to a static hosting provider. Opening `index.html` directly from the filesystem is not the supported way to run the game.
 
-## Тестове
-
-За проверка на игровата логика изпълни:
+## Tests
 
 ```bash
 npm test
 ```
 
-## Използвани технологии
+The test suite covers construction, road access, resource management, staffing, planting, harvesting, trading, training, territory expansion, raids, repairs, movement, and save compatibility.
+
+## Technology
 
 * React 19
 * Vite 7
-* HTML Canvas
-* JavaScript
-* CSS
+* JavaScript and CSS
+* HTML Canvas for the game world
+* SVG building artwork
+* Node.js built-in test runner
 
-## Структура на проекта
+## Project structure
 
 ```text
 game_kingdom/
+├── README.md
 └── kingdom/
-    ├── public/assets/buildings/   SVG изображения на постройките
-    ├── src/                       интерфейс и игрова логика
-    ├── tests/                     автоматизирани тестове
+    ├── public/assets/buildings/   Building SVG assets
+    ├── src/                       Interface and game logic
+    ├── tests/                     Automated tests
+    ├── README.md                  Detailed gameplay notes
     ├── index.html
     └── package.json
 ```
 
-## Ограничения на прототипа
+For detailed mechanics and rendering notes, see [the game documentation](kingdom/README.md).
 
-Играта няма мултиплейър, профили, облачно запазване, покупки или отделен сървър. Докато страницата е затворена, игровото време не напредва.
+## Prototype scope
+
+There is no multiplayer, cloud saving, in-game purchases, or backend. Expeditions use a simplified combat simulation rather than a separate tactical battlefield. Mobile controls support dragging and zoom buttons; pinch-to-zoom is not implemented. Fonts load from Google Fonts when available, with system fallbacks.

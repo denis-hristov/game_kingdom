@@ -17,7 +17,7 @@ test('each land expansion requires castle levels three, four and five',()=>{
     assert.equal(state.expansion,expansion);
     assert.deepEqual(state.resources,before);
     assert.deepEqual(bounds(state),oldBounds);
-    assert.match(state.notice,new RegExp(`ниво ${requiredLevel}`));
+    assert.match(state.notice,new RegExp(`level ${requiredLevel}`));
    }else{
     assert.equal(state.expansion,expansion+1);
     assert.equal(state.resources.wood,before.wood-150*(expansion+1));

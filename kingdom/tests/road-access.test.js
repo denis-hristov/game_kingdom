@@ -6,7 +6,7 @@ test('every building needs an edge-adjacent road, except roads themselves',()=>{
   const s=initialState();s.buildings=[];
   for(const type of Object.keys(BUILDINGS)){
     if(type==='road')assert.equal(canPlace(s,type,15,15),null);
-    else assert.match(canPlace(s,type,15,15),/Нужна е пътека/);
+    else assert.match(canPlace(s,type,15,15),/A road is required/);
   }
 });
 
@@ -16,17 +16,17 @@ test('any perimeter tile provides access, but diagonal, distant, destroyed or ov
     s.buildings=[building('road',x,y)];assert.equal(canPlace(s,'house',15,15),null);
   }
   for(const [x,y] of [[14,14],[17,17],[17,14],[14,17],[13,15],[15,18]]){
-    s.buildings=[building('road',x,y)];assert.match(canPlace(s,'house',15,15),/Нужна е пътека/);
+    s.buildings=[building('road',x,y)];assert.match(canPlace(s,'house',15,15),/A road is required/);
   }
-  s.buildings=[{...building('road',14,15),hp:0}];assert.match(canPlace(s,'house',15,15),/Нужна е пътека/);
-  s.buildings=[building('road',15,15)];assert.match(canPlace(s,'house',15,15),/заето/);
+  s.buildings=[{...building('road',14,15),hp:0}];assert.match(canPlace(s,'house',15,15),/A road is required/);
+  s.buildings=[building('road',15,15)];assert.match(canPlace(s,'house',15,15),/occupied/);
 });
 
 test('rejected construction does not spend resources; building a road enables it',()=>{
   let s=initialState();const resources={...s.resources},count=s.buildings.length;
   s=reducer(s,{type:'BUILD',kind:'house',x:12,y:12});
   assert.deepEqual(s.resources,resources);assert.equal(s.buildings.length,count);assert.equal(s.stats.built,0);
-  assert.match(s.notice,/Нужна е пътека/);
+  assert.match(s.notice,/A road is required/);
   s=reducer(s,{type:'BUILD',kind:'road',x:14,y:12});
   s=reducer(s,{type:'BUILD',kind:'house',x:12,y:12});
   assert.equal(s.buildings.length,count+2);assert.equal(s.stats.built,1);

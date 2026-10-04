@@ -1,47 +1,108 @@
-# Дъбов дол
+# Oakvale Kingdom
 
-Single-player браузърна стратегическа игра с React и Canvas. Самостоятелен локален прототип със собствена рисувана графика, вдъхновена от предоставената средновековна референция.
+A single-player medieval browser strategy game built with React and Canvas. Build a settlement, grow its economy, train an army, and defend your main castle.
 
-## Стартиране
+For download instructions, requirements, and a quick introduction, see the [repository README](../README.md).
 
-```sh
+## Run locally
+
+From this directory:
+
+```bash
 npm install
 npm run dev
 ```
 
-Отвори адреса, изписан от Vite. За production пакет: `npm run build`. За проверки на игровата логика: `npm test`.
+Open the address printed by Vite. Run `npm run build` to create the production files in `dist`, or `npm test` to check the game logic.
 
-## Управление
+## Controls
 
-Картата заема целия екран. Ресурсите са отгоре. Натисни Строене долу вдясно, избери постройка и натисни свободна клетка. Менюто се прибира след избор. Зелената маркировка показва разрешено място. Изборът остава активен за многократно строене. Escape или бутонът за отказ излизат от режима.
+The map fills the screen, with resources at the top. Click **Build** in the bottom right, choose a building, and click a free tile. Green highlights indicate valid placement. The menu closes after selection, and the selected building remains active for repeated construction. Press `Escape` or the cancel button to exit the mode.
 
-Натисни изображението на съществуваща сграда за изскачащо меню с цена за подобрение, надграждане, местене, ремонт или премахване. Прозрачните части на изображението не прихващат кликове. Влачене с мишка или пръст движи картата. Колелцето и бутоните + и − променят мащаба. Интервал поставя играта на пауза. Селище и Армия отварят останалите управления.
+Click the visible part of an existing building to open its upgrade, move, repair, or removal menu. Transparent parts of the artwork do not capture clicks. Drag with a mouse or finger to pan the map. Use the mouse wheel or zoom buttons to change the scale. Press `Space` to pause. **Village** and **Army** open settlement and military controls.
 
-## SVG изображения и рисуване
+## Construction and territory
 
-Всички 10 типа постройки, включително пътеката, имат самостоятелни SVG файлове в `public/assets/buildings/`. Те могат да се редактират отделно от логиката. `src/sprites.js` зарежда всяко изображение веднъж, растеризира го в кеш при 4 пъти игровия размер и използва `drawImage` за кадрите. Същите файлове се използват в менютата. Алфа каналът от кеша служи за прецизен избор на сгради. При проблем със зареждането остава резервното Canvas изображение. SVG форматът сам по себе си не гарантира бързина; кеширането избягва повторното рисуване на отделните векторни детайли във всеки кадър.
+Every building, including castles, walls, and towers, needs at least one operational road directly beside an edge when built or moved. Diagonal contact is insufficient. Roads themselves do not require adjacent roads. This rule checks new placement; removing a road does not remove existing buildings.
 
-## Игрови цикъл
+New games start with non-overlapping buildings, walls, and towers, each with immediate road access. The starting roads form a connected network of 47 tiles. Layout updates do not relocate buildings in existing saves.
 
-При строене или местене всяка сграда (включително замък, стена и кула) трябва да има поне една работеща пътека непосредствено до своя страна. Диагонален допир не е достатъчен. Самите пътеки не изискват съседна пътека. Правилото проверява само новото поставяне, без да премахва вече построени сгради или да забранява премахване на пътеки.
+The main castle has 5 levels. Other upgradeable buildings have 3. Territory expansions require castle levels 3, 4, and 5 respectively. Each expansion adds 3 tiles in every direction. Water and dense forest cannot be built on.
 
-При започване на нова игра началните сгради, стените и кулите са разположени без застъпване и всяка има непосредствен достъп до пътека. Първата стена отгоре в лявата колона е премахната, а четвъртата е възстановена. Началните пътеки са оптимизирани от 90 на 47, като остават една свързана мрежа. Промяната на началното разположение не мести сгради във вече запазени игри.
+## Economy and residents
 
-Всеки набег започва след 60 секунди подготовка или веднага с видимия бутон Започни сега до таймера. Набегът избира произволно северния, източния, южния или западния ръб на притежаваната територия. При разширяване на владението началните позиции се изместват с новата граница. Ако граничните квадратчета са гора, вода или заети от сгради, нападателите се появяват на най-близката свободна земя навътре. Посоката се показва в известието и лентата за нападение. Първата победа дава 40 злато, 30 дърво, 15 камък и 20 храна; наградата на всяка следваща вълна расте с 2% и се закръгля до цял ресурс. Ако нападателите разрушат главния замък, играта приключва и остава замръзнала, включително след презареждане. Бутонът Добре, започни отначало създава и запазва ново селище.
+Farms, lumberyards, and quarries require 5 workers at level 1, 8 at level 2, and 11 at level 3. Incomplete teams work at 50% speed. Destroyed buildings stop working and release their workers.
 
-Жителите се движат плавно по свързаните пътеки и спират при пауза. По време на набег войниците и нападателите могат да се движат по свободна земя без пътека, но намират обходен маршрут около всички сгради и стени. Движението между игровите секунди се показва плавно.
+Civilian residents are assigned automatically in construction order, with each resident working in only one building. Training, casualties, immigration, and upgrades recalculate assignments. Soldiers do not work.
 
-* Фермите и дърварниците не произвеждат пасивно храна или дърво. Всяка от тези сгради позволява 5 засадени квадратчета на ниво 1, 8 на ниво 2 и 11 на ниво 3. Избери сградата и засади жито или дърво с натискане или влачене през свободни квадратчета във владението. Невалидните и вече засятите квадратчета се пропускат при влачене. Растежът трае 45 секунди с пълен екип; квадратче жито дава 5 храна, а дърво дава 5 дърво. Житото и дърветата от нива 1 и 2 се прибират с натискане или влачене през готовите квадратчета, като неготовите се пропускат. Започни влаченето върху засадено квадратче. В менюто на ферма или дърварница бутонът Премахни засадени квадратчета включва режим, в който с натискане или влачене се премахват само квадратчетата на избраната сграда. Премахването освобождава мястото, но не носи ресурс. На ниво 3 и фермата, и дърварницата прибират автоматично и веднага започват нов растеж на същото квадратче, освен ако квадратчето е премахнато. Показателите за храна и дърво на минута включват средния очакван добив от автоматичната реколта и отчитат броя засадени квадратчета и работниците. При недостиг на работници растежът е на 50% скорост. Играта не напредва, когато е затворена.
-* Фермите, дърварниците и каменоломните изискват 5 работници на ниво 1, 8 на ниво 2 и 11 на ниво 3. При непълен екип растежът или производството е на 50% скорост. Разрушените сгради не работят и не заемат работници. Пазарът изисква 1 работник и не произвежда пасивно злато. От менюто му се избира една автоматична сделка на всеки 20 секунди. На ниво 1 цените са 15 храна, 10 дърво или 5 камък за 1 злато; на ниво 2 са 25 храна, 15 дърво или 8 камък за 2 злато; на ниво 3 са 30 храна, 20 дърво или 10 камък за 3 злато. Стоката може да се смени или търговията да се спре по всяко време; това нулира текущия таймер. Без работник таймерът спира, а при недостатъчен ресурс сделката се пропуска. Изборът и оставащото време се запазват. Показателите на минута включват очакваната средна търговия, когато тя е активна и има стока. Цивилните жители се разпределят автоматично по реда на построяване, всеки само в една сграда. Обучение, загуби, нови жители и подобрения преизчисляват разпределението автоматично.
-* Къщите увеличават капацитета. Нови жители пристигат на всеки 18 секунди срещу 15 храна.
-* Казармите обучават мечоносци, стрелци и пазачи. Нивото на казармата ускорява обучението. Войниците вече не работят.
-* Стени, кули и войници защитават селището при набези на всяка минута. Крепостните стени имат 560 здраве на ниво 1, двойно спрямо първоначалния вариант; здравето на стените от стари запазени игри се удвоява веднъж при зареждане. Една стена струва 6 камък за строеж, а поправката ѝ струва 1 дърво на всеки започнати 20 липсващи точки здраве. Кулите атакуват в радиус 7 клетки. Враговете се насочват към най-близката работеща постройка, докато защитниците преследват враговете. След всеки отблъснат набег се появява предложение за поправка на всички повредени сгради наведнъж, с точна обща цена в дърво. Ако дървото не стига, поправката не започва и може да бъде отложена.
-* Военните походи са 20-секундна абстрактна симулация. Сравняват се силите на армиите. Победата носи ресурси и отключва следващ лагер.
-* Замъкът има 5 нива, другите подобряеми сгради имат 3. Първото разширение на територията се отключва при Главен замък ниво 3, второто при ниво 4, третото при ниво 5. Водата и гъстата гора са непроходими за строене.
-* Разрушените сгради се ремонтират. Възстановяването на разрушен замък е безплатно.
+Houses add 6 resident slots per level. A new resident arrives every 18 seconds for 15 food if capacity is available. Each resident consumes 0.5 food per minute. Unassigned residents leave when food runs out.
 
-Прогресът се пази на всеки 5 секунди и при излизане в localStorage на текущия браузър. Не е акаунт или облачно запазване. Играта не симулира времето, през което е затворена. Браузърите могат да забавят таймера в неактивен раздел.
+Quarries produce 18 stone per minute per level with a full workforce.
 
-## Обхват на прототипа
+### Wheat and trees
 
-Графиката е нарисувана програмно, а не копирана от снимката. Няма мултиплейър, сървър, покупки или външни игрови услуги. Походите нямат отделно тактическо бойно поле. Движението на бойците е опростено и няма пълно търсене на път през препятствия. Картата използва квадратна логическа мрежа, визуално скъсена по вертикала. Мобилното управление поддържа влачене и бутони за мащаб, без pinch жест. Външни шрифтове се зареждат от Google Fonts, когато има връзка, със системен резервен шрифт.
+Farms and lumberyards do not produce food or wood passively. Each supports 5 planted plots at level 1, 8 at level 2, and 11 at level 3.
+
+Select a building and click **Plant wheat** or **Plant tree**, then click or drag across empty tiles in your territory. Invalid and already planted tiles are skipped while dragging.
+
+Growth takes 45 seconds with a full workforce, or 90 seconds when understaffed. Each wheat plot yields 5 food, and each tree yields 5 wood.
+
+At levels 1 and 2, click or drag across mature crops to harvest them and free their plots. Start the drag on a planted tile. Unripe crops are skipped. At level 3, both buildings automatically harvest and start another growth cycle in the same plot.
+
+**Remove planted plots** enables a mode that clears only the selected building’s crops by clicking or dragging. Clearing a plot yields no resources and stops its automatic regrowth.
+
+Food and wood rates include the expected average yield from automatic harvesting, accounting for planted plots and staffing.
+
+### Markets
+
+A market requires 1 worker and does not generate gold passively. Select one resource to sell automatically every 20 staffed seconds.
+
+| Market level | Food sold | Wood sold | Stone sold | Gold received |
+| --- | --- | --- | --- | --- |
+| 1 | 15 | 10 | 5 | 1 |
+| 2 | 25 | 15 | 8 | 2 |
+| 3 | 30 | 20 | 10 | 3 |
+
+Each trade sells only the selected resource. Switching resources or stopping trading resets the timer. Without a worker, the timer pauses. If there is insufficient stock, the trade is skipped. The selected resource and remaining time are saved. Projected rates include active trades when staffing and stock allow them.
+
+## Army and combat
+
+Barracks train swordsmen, archers, and guards, one at a time. Higher barracks levels reduce training time.
+
+### Raids
+
+Each raid starts after 60 seconds of preparation, or immediately through **Start now** beside the timer. Raiders approach from a randomly chosen northern, eastern, southern, or western boundary of your territory. Expansions move their spawn points to the new boundary. If boundary tiles contain forest, water, or buildings, raiders spawn on the nearest free ground inward. The direction appears in the notification and raid banner.
+
+The first victory grants 40 gold, 30 wood, 15 stone, and 20 food. Each following wave increases rewards by 2%, rounded to whole resources.
+
+Walls, towers, and soldiers defend the settlement. Level 1 walls have 560 health and cost 6 stone. Repairs cost 1 wood for each started block of 20 missing health points. Towers attack within 7 tiles. Enemies target the nearest operational building, while defenders pursue enemies.
+
+After each successful defense, a repair prompt offers to fix every damaged building for the displayed total wood cost. If wood is insufficient, no repairs occur; the prompt can be dismissed.
+
+If raiders destroy the main castle, the game ends and stays frozen after reloading. **Start a new game** creates and saves a fresh settlement.
+
+### Expeditions
+
+Expeditions are 20-second combat simulations that compare army strength. Victory brings resources and unlocks the next camp. Stronger armies suffer fewer losses. Troops on an expedition cannot defend the village.
+
+## Movement
+
+Residents move smoothly along connected roads and stop when paused. During raids, soldiers and attackers can cross unpaved ground while routing around buildings and walls. Movement is interpolated between game ticks.
+
+## Saves and compatibility
+
+Progress is saved every 5 seconds and when leaving the page, using `localStorage` in the current browser. This is not an account or cloud save. The game does not simulate time while closed, and browsers may throttle inactive tabs.
+
+Existing saves retain their settlement and progress. Older wall health is migrated once, and older markets receive inactive trade fields. Chronicle entries from the Bulgarian version are translated when loaded.
+
+## SVG artwork and rendering
+
+All 10 building types, including roads, have standalone SVG assets in `public/assets/buildings/`. Artwork can be edited independently of the game logic.
+
+`src/sprites.js` loads each asset once, rasterizes it into a cache at four times its game size, and uses `drawImage` to render frames. Menus use the same SVG files. The cached alpha channel supports precise building selection. Canvas artwork provides a fallback if an asset fails to load.
+
+Caching avoids redrawing individual vector details every frame; SVG alone does not guarantee fast rendering.
+
+## Prototype limitations
+
+There is no multiplayer, backend, in-game purchasing, or external game service. Expeditions do not have a separate tactical battlefield. Combat movement and pathfinding are simplified. The map uses a square logical grid that is visually compressed vertically. Touch controls support dragging and zoom buttons, without pinch gestures. Google Fonts load when a connection is available, with system font fallbacks.
