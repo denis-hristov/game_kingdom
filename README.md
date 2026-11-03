@@ -1,121 +1,136 @@
 # Oakvale Kingdom
 
-Build a village. Grow a kingdom. Defend what you create.
+A single-player medieval strategy game combining village building, resource management, farming, army development and real-time defense. Grow a small settlement into a kingdom, manage its residents and defend what you build against increasingly powerful raids.
 
-Oakvale Kingdom is a single-player browser strategy game set in a medieval world. Start with a small settlement and turn it into a thriving kingdom by gathering resources, housing residents, assigning workers, training soldiers, and defending your castle against increasingly powerful raids.
-
-The game is a local prototype built with React, Vite, and HTML Canvas. No account or game server is required.
-
-## Features
-
-* Build and upgrade houses, farms, lumberyards, quarries, markets, barracks, walls, towers, and roads.
-* Manage food, wood, stone, gold, population, and workers.
-* Plant wheat and trees, harvest them manually, and unlock automatic harvesting at level 3.
-* Sell resources for gold through automatic market trades.
-* Train swordsmen, archers, and guards to defend your village.
-* Send your army on expeditions to earn loot and unlock enemy camps.
-* Upgrade the castle and expand your territory.
-* Move, repair, and remove buildings.
-* Save your progress automatically in your browser.
-
-## Requirements
-
-* [Node.js](https://nodejs.org/) 20.19+ on the 20.x release line, or 22.12+ on newer release lines, as required by Vite 7. Use a current LTS release.
-* npm, included with Node.js.
-* A modern browser.
-* [Git](https://git-scm.com/downloads), if you want to clone the repository.
-
-## Download
-
-Clone the repository and enter the game directory:
-
-```bash
-git clone https://github.com/denis-hristov/game_kingdom.git
-cd game_kingdom/kingdom
-```
-
-Alternatively, select **Code → Download ZIP** on GitHub, extract the archive, and open a terminal in the extracted `kingdom` folder.
-
-## Install and run
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Open the address printed in the terminal, usually [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the terminal running while you play. Press `Ctrl + C` to stop the server.
-
-All npm commands in this README should be run from the `kingdom` directory.
+**Your goal is to keep the main castle standing, develop your kingdom and conquer the Black Fortress.** Upgrade the castle through its 5 levels, expand your territory, train an army and defeat the three enemy camps.
 
 ## How to play
 
-* Drag the map with a mouse or finger to move around.
-* Zoom with the mouse wheel or the on-screen zoom buttons.
-* Click **Build**, choose a building, and select an empty tile.
-* Buildings need an operational road directly beside at least one edge. A diagonal road does not count.
-* Click a building to upgrade, move, repair, or remove it.
-* Select a farm or lumberyard to plant wheat or trees. Click or drag across mature crops to harvest them.
-* Open **Village** to manage your settlement and **Army** to train soldiers or launch expeditions.
-* Press `Escape` to cancel the active mode and `Space` to pause or resume.
+1. Start with a settlement, resources, 12 residents and a small defending army.
+2. Build Houses for population capacity and connect new buildings to an operational road along at least one edge.
+3. Plant wheat through Farms and trees through Lumberyards. Harvest mature plots for food and wood; level 3 buildings automate harvesting and regrowth.
+4. Keep your production buildings staffed, mine stone in Quarries and use Markets to sell selected resources for gold.
+5. Upgrade the main castle to unlock higher building levels and territory expansions. The castle has 5 levels; other upgradeable buildings have 3.
+6. Train swordsmen, archers and guards in Barracks. Build Walls and Watchtowers, repair damaged buildings and prepare for the next raid.
+7. Send troops on expeditions to defeat the Raider Camp, Iron Pass and Black Fortress. Keep enough defenders at home while your expedition is away.
 
-Raids arrive every 60 seconds, or immediately when you click **Start now**. Protect the main castle: if it falls, the game ends.
+Raids normally begin after 60 seconds of preparation, or immediately through **Start now**. Raiders approach from a randomly chosen side of your territory. If they destroy the main castle, the game ends. Expeditions use a 20-second army-strength simulation and unlock the next camp after victory.
 
-## Saving your progress
+The game interface is in English. It runs locally in your browser without an account or a game server. The simulation does not advance while the game is closed, and background tabs may slow its timers.
 
-The game saves every 5 seconds and when you leave the page. You can also click **Save**.
+## Download and run on Mac or Windows
 
-Progress is stored in `localStorage` for the current browser and site address. It does not sync across devices, browsers, or different ports. Clearing site data may delete your save. The game does not advance while closed, and background tabs may slow its timers.
+The commands below download the repository, install its dependencies and start the game in your browser. Each operating system has one complete copyable command block. Run only the block for your operating system in a new folder where `game_kingdom` does not already exist.
 
-Existing saves remain compatible with the English version, including translated chronicle entries.
+Install [Git](https://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download) first. Use Node.js 22.12 or newer; npm is included with Node.js. Restart your terminal after installing them.
 
-## Production build
+Internet access is needed to download the repository and dependencies. The game runs using JavaScript and browser APIs, so a native compiler is not required.
 
-```bash
-npm run build
+### macOS
+
+Open Terminal and paste the entire block:
+
+```sh
+git --version && node --version && npm --version &&
+git clone https://github.com/denis-hristov/game_kingdom.git &&
+cd game_kingdom/kingdom &&
+npm ci &&
+npm run dev
 ```
 
-The optimized static files are generated in `kingdom/dist` relative to the repository root. Serve this folder with a static web server or deploy it to a static hosting provider. Opening `index.html` directly from the filesystem is not the supported way to run the game.
+### Windows
 
-## Tests
+Open PowerShell and paste the entire block. `npm.cmd` works with the usual PowerShell script restrictions, so no execution-policy change is needed.
 
-```bash
-npm test
+```powershell
+$ErrorActionPreference = 'Stop'
+git --version
+if ($LASTEXITCODE -ne 0) { throw 'Install Git, then restart PowerShell.' }
+node --version
+if ($LASTEXITCODE -ne 0) { throw 'Install Node.js 22.12 or newer, then restart PowerShell.' }
+npm.cmd --version
+if ($LASTEXITCODE -ne 0) { throw 'npm is required. Reinstall Node.js, then restart PowerShell.' }
+git clone https://github.com/denis-hristov/game_kingdom.git
+if ($LASTEXITCODE -ne 0) { throw 'Repository download failed.' }
+Set-Location game_kingdom/kingdom
+npm.cmd ci
+if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed.' }
+npm.cmd run dev
 ```
 
-The test suite covers construction, road access, resource management, staffing, planting, harvesting, trading, training, territory expansion, raids, repairs, movement, and save compatibility.
+When the server starts, open the address printed in the terminal, usually **[http://127.0.0.1:5173](http://127.0.0.1:5173)**. Keep the terminal open while playing; press Ctrl+C to stop it. If port 5173 is occupied, use the alternative address printed by Vite.
 
-## Technology
+To play again later, open a terminal inside `game_kingdom/kingdom` and run `npm run dev` on Mac or `npm.cmd run dev` on Windows. All npm commands must run from the inner `kingdom` folder, which contains `package.json`.
 
-* React 19
-* Vite 7
-* JavaScript and CSS
-* HTML Canvas for the game world
-* SVG building artwork
-* Node.js built-in test runner
+You can also use GitHub's **Code > Download ZIP**, extract the archive and open a terminal inside its `kingdom` folder. Continue from the dependency installation step for your operating system.
 
-## Project structure
+### Desktop availability
 
-```text
-game_kingdom/
-├── README.md
-└── kingdom/
-    ├── public/assets/buildings/   Building SVG assets
-    ├── src/                       Interface and game logic
-    ├── tests/                     Automated tests
-    ├── README.md                  Detailed gameplay notes
-    ├── index.html
-    └── package.json
-```
+| Platform | Available version | How to play |
+| --- | --- | --- |
+| macOS | Browser game | Follow the macOS block and open the local address in a modern browser. |
+| Windows | Browser game | Follow the Windows block and open the local address in a modern browser. |
 
-For detailed mechanics and rendering notes, see [the game documentation](kingdom/README.md).
+The current repository provides the browser version for both platforms. Native `.app` and `.exe` installers and automatic desktop packaging are not included. Local play uses the running development server; this project does not install a Service Worker or an offline browser cache.
 
-## Prototype scope
+## Technologies
 
-There is no multiplayer, cloud saving, in-game purchases, or backend. Expeditions use a simplified combat simulation rather than a separate tactical battlefield. Mobile controls support dragging and zoom buttons; pinch-to-zoom is not implemented. Fonts load from Google Fonts when available, with system fallbacks.
+| Technology | How the game uses it |
+| --- | --- |
+| React 19 and React DOM | Interface panels, building menus, resource displays, army management, dialogs and game state updates. |
+| JavaScript and JSX | Simulation rules, economy, residents, planting, construction, upgrades, training, raids and expeditions. |
+| HTML Canvas 2D | Renders the world, terrain, buildings, residents, troops, crops and combat effects. |
+| SVG artwork | Separate illustrations for all 10 building types, shared by the map and menus. |
+| Sprite caching and alpha hit testing | Rasterizes SVG artwork once at four times its game size, reuses cached images and selects buildings by their visible pixels. |
+| CSS | Full-screen map layout, responsive panels, typography and interface feedback. |
+| Vite 7, Node.js and npm | Development server, dependency installation and optimized static production builds. |
+| Browser animation and input APIs | `requestAnimationFrame` drives rendering; pointer input supports panning, building placement, planting and harvesting. |
+| Grid-based pathfinding | Breadth-first search finds routes around buildings and walls; connected-road traversal animates residents along the road network. |
+| JSON and `localStorage` | Serialize and store the settlement, resources, army, crops, progress and activity log in the current browser. |
+| Node.js built-in test runner | Automated checks for game rules, construction, staffing, planting, trading, combat, movement and save compatibility. |
+
+### Terrain and world rendering
+
+The world uses a **44 by 44 logical grid**. Terrain is calculated from tile coordinates: a sine curve defines the winding river, forest surrounds the outer map and grass provides buildable ground. Coordinate-based noise adds consistent visual variation to grass, decorations and trees.
+
+New settlements share the same terrain and starting layout. The current generator does not use a player-selectable seed. Random raid directions are chosen separately during play.
+
+The renderer caches the ground layer, draws buildings from cached sprites and interpolates movement between simulation ticks. Camera panning, zooming and high-density display scaling keep the world usable across different window sizes.
+
+### Campaign and simulation
+
+The campaign contains three enemy camps defined in `kingdom/src/engine.js`. The simulation advances once per second and manages resource production, worker allocation, population, crop growth, training queues, raids and expeditions. Main-castle upgrades unlock higher building levels and three territory expansions, each adding three tiles in every direction.
+
+Progress is saved every 5 seconds, when leaving the page and through the **Save** button. Saves belong to the current browser and site address; changing browsers or ports creates a separate save location. Clearing browser site data can remove progress. Compatibility handling preserves older settlements and translates activity entries from earlier Bulgarian saves.
+
+## Development
+
+See [the game documentation](kingdom/README.md) for detailed controls, economy, construction, combat, movement and rendering notes.
+
+Run the commands below from `game_kingdom/kingdom` after installing dependencies:
+
+| Task | Command | Result |
+| --- | --- | --- |
+| Start development | `npm run dev` | Local browser game with Vite. |
+| Run existing tests | `npm test` | Checks the simulation and interaction rules. |
+| Build for production | `npm run build` | Generates static files in `kingdom/dist`, relative to the repository root. |
+
+On Windows PowerShell, use `npm.cmd` in place of `npm`. Serve the production `dist` folder through a static web server or static hosting provider. Opening `index.html` directly from the filesystem is not the supported launch method.
+
+| Folder or file | Contents |
+| --- | --- |
+| `kingdom/src/engine.js` | Simulation rules, resources, building definitions, units, raids, expeditions and save handling. |
+| `kingdom/src/main.jsx` | React interface, simulation timer, autosave and game controls. |
+| `kingdom/src/World.jsx` | Canvas rendering, camera and map interactions. |
+| `kingdom/src/navigation.js` | Pathfinding, movement and road-network traversal. |
+| `kingdom/src/planting.js` | Planting and harvesting interaction helpers. |
+| `kingdom/src/art.js`, `kingdom/src/sprites.js` | Procedural artwork, SVG sprite loading, caching and pixel-based selection. |
+| `kingdom/public/assets/buildings` | Building SVG artwork. |
+| `kingdom/tests` | Automated tests. |
+| `kingdom/README.md` | Detailed gameplay and technical documentation. |
+
+## Assets and third-party licenses
+
+Building artwork is bundled in `kingdom/public/assets/buildings`. The interface requests Manrope and Noto Serif from Google Fonts when a connection is available and uses system font fallbacks otherwise. React, React DOM, Vite and other dependencies retain their respective licenses.
+
+The current prototype has local browser saves and simplified combat. Multiplayer, cloud synchronization and in-game purchases are outside its current scope.
