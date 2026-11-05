@@ -9,10 +9,12 @@ A single-player medieval strategy game combining village building, resource mana
 1. Start with a settlement, resources, 12 residents and a small defending army.
 2. Build Houses for population capacity and connect new buildings to an operational road along at least one edge.
 3. Plant wheat through Farms and trees through Lumberyards. Harvest mature plots for food and wood; level 3 buildings automate harvesting and regrowth.
-4. Keep your production buildings staffed, mine stone in Quarries and use Markets to sell selected resources for gold.
+4. Assign workers to production buildings, mine stone in Quarries and use Markets to sell selected resources for gold. Gray occupancy bubbles show incomplete workshops and houses and disappear when full.
 5. Upgrade the main castle to unlock higher building levels and territory expansions. The castle has 5 levels; other upgradeable buildings have 3.
 6. Train swordsmen, archers and guards in Barracks. Build Walls and Watchtowers, repair damaged buildings and prepare for the next raid.
 7. Send troops on expeditions to defeat the Raider Camp, Iron Pass and Black Fortress. Keep enough defenders at home while your expedition is away.
+
+Raids mix swordsmen, archers and guards, with different compositions across waves. Archers and guards deal half a swordsman's damage. Your army detects attackers behind walls, uses friendly gates and takes defensive positions when enclosed; your archers shoot over friendly walls.
 
 Raids normally begin after 60 seconds of preparation, or immediately through **Start now**. Raiders approach from a randomly chosen side of your territory. If they destroy the main castle, the game ends. Expeditions use a 20-second army-strength simulation and unlock the next camp after victory.
 
@@ -80,12 +82,12 @@ The current repository provides the browser version for both platforms. Native `
 | React 19 and React DOM | Interface panels, building menus, resource displays, army management, dialogs and game state updates. |
 | JavaScript and JSX | Simulation rules, economy, residents, planting, construction, upgrades, training, raids and expeditions. |
 | HTML Canvas 2D | Renders the world, terrain, buildings, residents, troops, crops and combat effects. |
-| SVG artwork | Separate illustrations for all 10 building types, shared by the map and menus. |
+| SVG artwork | Level-specific illustrations for all 10 building types, plus gates and bridges, shared by the map and menus. |
 | Sprite caching and alpha hit testing | Rasterizes SVG artwork once at four times its game size, reuses cached images and selects buildings by their visible pixels. |
 | CSS | Full-screen map layout, responsive panels, typography and interface feedback. |
 | Vite 7, Node.js and npm | Development server, dependency installation and optimized static production builds. |
 | Browser animation and input APIs | `requestAnimationFrame` drives rendering; pointer input supports panning, building placement, planting and harvesting. |
-| Grid-based pathfinding | Breadth-first search finds routes around buildings and walls; connected-road traversal animates residents along the road network. |
+| Grid-based pathfinding | Weighted routes account for terrain, roads, bridges, obstacles and reachable combat positions; connected-road traversal animates residents along the road network. |
 | JSON and `localStorage` | Serialize and store the settlement, resources, army, crops, progress and activity log in the current browser. |
 | Node.js built-in test runner | Automated checks for game rules, construction, staffing, planting, trading, combat, movement and save compatibility. |
 
@@ -99,7 +101,7 @@ The renderer caches the ground layer, draws buildings from cached sprites and in
 
 ### Campaign and simulation
 
-The campaign contains three enemy camps defined in `kingdom/src/engine.js`. The simulation advances once per second and manages resource production, worker allocation, population, crop growth, training queues, raids and expeditions. Main-castle upgrades unlock higher building levels and three territory expansions, each adding three tiles in every direction.
+The campaign contains three enemy camps defined in `kingdom/src/engine.js`. Combat, movement and projectile impacts advance in steps of up to 50 milliseconds. Resource production, worker allocation, population, crop growth, training queues, raid countdowns and expeditions advance once per simulated second. Main-castle upgrades unlock higher building levels and three territory expansions, each adding three tiles in every direction.
 
 Progress is saved every 5 seconds, when leaving the page and through the **Save** button. Saves belong to the current browser and site address; changing browsers or ports creates a separate save location. Clearing browser site data can remove progress. Compatibility handling preserves older settlements and translates activity entries from earlier Bulgarian saves.
 
@@ -119,7 +121,9 @@ On Windows PowerShell, use `npm.cmd` in place of `npm`. Serve the production `di
 
 | Folder or file | Contents |
 | --- | --- |
-| `kingdom/src/engine.js` | Simulation rules, resources, building definitions, units, raids, expeditions and save handling. |
+| `kingdom/src/engine.js` | Simulation rules, resources, buildings, raids, expeditions and save handling. |
+| `kingdom/src/units.js` | Troop statistics and mixed raid formations. |
+| `kingdom/src/combat.js` | Combat targeting, defender awareness, gate access, projectiles and unit collisions. |
 | `kingdom/src/main.jsx` | React interface, simulation timer, autosave and game controls. |
 | `kingdom/src/World.jsx` | Canvas rendering, camera and map interactions. |
 | `kingdom/src/navigation.js` | Pathfinding, movement and road-network traversal. |

@@ -4,7 +4,7 @@ import {initialState,building,reducer,production,projectedProduction,cropCapacit
 
 function village(type='lumber',level=1,population=11){
  const s=initialState();s.army={swordsman:0,archer:0,guard:0};s.population=population;s.raidIn=181;
- s.buildings=[{...building(type,20,20),level},building('castle',25,20)];return s;
+ s.buildings=[{...building(type,20,20),level,assignedWorkers:Math.min(population,5+(level-1)*3)},building('castle',25,20)];return s;
 }
 
 test('lumberyards provide 5, 8, 11 tree plots and no passive wood',()=>{
@@ -45,7 +45,7 @@ test('level three lumberyard automatically harvests and replants every 45 second
 });
 
 test('level three trees grow and auto-harvest at half speed with too few workers',()=>{
- let s=village('lumber',3,0),id=s.buildings[0].id;
+ let s=village('lumber',3,1),id=s.buildings[0].id;
  s=reducer(s,{type:'PLANT',farmId:id,x:15,y:15});
  assert.equal(projectedProduction(s).wood,TREE_YIELD*.5/45);
  const wood=s.resources.wood;
@@ -63,13 +63,13 @@ test('level three trees grow and auto-harvest at half speed with too few workers
 test('level three wheat auto-harvests and replants in the same plot every cycle',()=>{
  let s=village('farm',3),id=s.buildings[0].id;
  s=reducer(s,{type:'PLANT',farmId:id,x:15,y:15});const cropId=s.crops[0].id;
- s.population=0;s.resources.food=0;s.time=1;const food=s.resources.food;
+ s.population=1;s.buildings[0].assignedWorkers=1;s.resources.food=0;s.time=1;const food=s.resources.food;
  for(let i=0;i<89;i++)s=reducer(s,{type:'TICK'});
  assert.equal(s.crops[0].progress,44.5);assert.equal(s.resources.food,food);
- s=reducer(s,{type:'TICK'});assert.equal(s.resources.food,food+WHEAT_YIELD);
+ s=reducer(s,{type:'TICK'});assert.ok(Math.abs(s.resources.food-(food+WHEAT_YIELD-1/120))<1e-8);
  assert.equal(s.crops[0].id,cropId);assert.deepEqual([s.crops[0].x,s.crops[0].y,s.crops[0].progress],[15,15,0]);
  for(let i=0;i<90;i++)s=reducer(s,{type:'TICK'});
- assert.equal(s.resources.food,food+WHEAT_YIELD*2);assert.equal(cropCount(s,id),1);
+ assert.ok(Math.abs(s.resources.food-(food+WHEAT_YIELD*2-91/120))<1e-8);assert.equal(cropCount(s,id),1);
 });
 
 test('tree plots survive save and vanish with their lumberyard',()=>{

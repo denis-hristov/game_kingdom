@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 180" width="160" height="180">
+  <defs>
+    <linearGradient id="stone" x2="1" y2=".3"><stop stop-color="#d8d2b6"/><stop offset=".55" stop-color="#b7b69d"/><stop offset="1" stop-color="#849486"/></linearGradient>
+    <pattern id="brick" width="20" height="14" patternUnits="userSpaceOnUse"><path d="M0 0h20M0 7h20M10 0v7M0 7v7M20 7v7" fill="none" stroke="#6b7763" stroke-opacity=".32"/></pattern>
+  </defs>
+  <ellipse cx="88" cy="127" rx="29" ry="48" fill="#243a2b" opacity=".14"/>
+  <g stroke="#616e5b" stroke-width="2" stroke-linejoin="round">
+    <path d="M62 14h28v66H62Z" fill="url(#stone)"/>
+    <path d="M90 14l13-12v144l-13 27Z" fill="#87947f"/>
+    <path d="M62 14h28v159H62Z" fill="url(#stone)"/>
+    <path d="M62 14h28v159H62Z" fill="url(#brick)"/>
+    <path d="M62 14 75 2h28L90 14Z" fill="#d8d3b4"/>
+    <path d="M62 14V2h12v12h16V2h13v21H90v17h13v15H90v17h13v15H90v17h13v15H90v17h13v15H90v22H62v-12h16v-17H62v-15h16v-17H62V97h16V80H62V65h16V48H62V33h16V14Z" fill="#c4c5a9"/>
+    <path d="M62 163h28v10H62Z" fill="#a0ac92"/>
+    <path d="M65 28v123" stroke="#e5dcc0"/>
+  </g>
+</svg>

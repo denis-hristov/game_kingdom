@@ -30,7 +30,8 @@ export function drawTree(c,x,y,scale=1,variant=0){c.save();c.translate(x,y);c.sc
 export function drawBuilding(c,b,unit=1){
  c.save();c.scale(unit,unit);const type=b.type;const level=b.level||1;
  if(b.hp<=0){shadow(c,0,0,32);for(let i=0;i<9;i++)polygon(c,[[i*7-30,0],[i*7-34,-8-i%3*4],[i*7-25,-12],[i*7-20,3]],'#989383');c.restore();return;}
- if(drawSprite(c,type)){if(level>1&&type!=='road'&&type!=='wall')flag(c,type==='castle'?65:30,type==='castle'?-100:-55);c.restore();return;}
+ if(type==='wall'&&b.wallSprites){let drawn=false;for(const sprite of b.wallSprites)drawn=drawSprite(c,sprite,level)||drawn;if(drawn){c.restore();return;}}
+ if(drawSprite(c,type,level)){c.restore();return;}
  if(type==='house')house(c,-35,0,67,43,level>1?'#487b74':'#b9653e');
  if(type==='lumber'){house(c,-26,-1,59,40,'#477765');for(let i=0;i<3;i++){rect(c,-42+i*2,-9-i*7,30,8,'#92623e');ellipse(c,-12+i*2,-5-i*7,4,4,'#d3a66b',outline);}line(c,36,-4,39,-31,'#855b35',4);polygon(c,[[36,-29],[47,-34],[47,-24],[37,-22]],'#a6b3aa');}
  if(type==='barracks'){house(c,-39,0,77,51,'#6c7881');rect(c,-28,-34,19,21,'#af493d');polygon(c,[[-28,-14],[-19,-8],[-9,-14]],'#af493d');line(c,-25,-31,-13,-15,'#e1d0a1',2);line(c,-13,-31,-25,-15,'#e1d0a1',2);flag(c,29,-75,'#c46647');line(c,39,-1,39,-33,'#745637',2);line(c,44,-1,44,-30,'#745637',2);polygon(c,[[36,-32],[39,-41],[42,-32]],'#c6d1c5');}
@@ -48,13 +49,42 @@ export function drawBuilding(c,b,unit=1){
  tower(c,-55,-6,68,true);tower(c,55,-6,68,true);rect(c,-34,-52,69,55,'#c8c6ae');stones(c,-34,-48,69,50);for(let i=0;i<5;i++)rect(c,-34+i*15,-62,9,13,'#ded6b7');
  c.beginPath();c.moveTo(-13,2);c.lineTo(-13,-22);c.arc(0,-22,13,Math.PI,0);c.lineTo(13,2);c.fillStyle='#524b3e';c.fill();for(let i=-8;i<12;i+=5)line(c,i,1,i,-27,'#a3824e',2);line(c,-12,-15,12,-15,'#bd9a60',2);
  rect(c,-42,-86,10,22,'#c4884c');rect(c,31,-86,10,22,'#c4884c');window(c,-28,-82,12,15);window(c,16,-82,12,15);
- if(level>1){flag(c,-55,-126,'#dca848');flag(c,55,-126,'#dca848');}
  }
  c.restore();
 }
-export function drawPerson(c,x,y,type='villager',phase=0,enemy=false){c.save();c.translate(x,y);shadow(c,0,1,5);const color=enemy?'#ad4f3b':type==='archer'?'#667d43':type==='guard'?'#526e83':type==='swordsman'?'#427875':'#b68051';line(c,-2,-2,-3+Math.sin(phase)*2,2,'#574532',2);line(c,2,-2,3-Math.sin(phase)*2,2,'#574532',2);rect(c,-4,-11,8,9,color);ellipse(c,0,-15,4.1,4.5,'#e4bd86',outline);ellipse(c,0,-18,4,2.5,type==='villager'?'#6a4c36':'#9da797');if(type!=='villager'){if(type==='archer'){c.beginPath();c.arc(5,-9,6,-1.4,1.4);c.strokeStyle='#ad8b53';c.lineWidth=1.4;c.stroke();}else{line(c,6,-2,6,-14,'#d5d8bd',2);ellipse(c,-5,-7,3.2,5,color,outline);}}c.restore();}
+export function drawPerson(c,x,y,type='villager',phase=0,enemy=false,facing=Math.PI/2){
+ c.save();c.translate(x,y);shadow(c,0,1,5);
+ const side=Math.cos(facing),back=Math.sin(facing)<-.35;
+ if(side<-.2)c.scale(-1,1);
+ const color=enemy?'#ad4f3b':type==='archer'?'#667d43':type==='guard'?'#526e83':type==='swordsman'?'#427875':'#b68051';
+ line(c,-2,-2,-3+Math.sin(phase)*2,2,'#574532',2);line(c,2,-2,3-Math.sin(phase)*2,2,'#574532',2);
+ rect(c,-4,-11,8,9,color);line(c,back?0:3,-10,back?0:3,-4,back?'#d4b98c':'#ffffff35',1);
+ if(type==='guard'){rect(c,-3,-11,6,5,'#a8b0a0');line(c,-4,-11,4,-11,'#d5d8bd',2);}
+ ellipse(c,0,-15,4.1,4.5,back?'#896e4e':'#e4bd86',outline);
+ ellipse(c,0,-18,4,2.5,type==='villager'?'#6a4c36':'#9da797');
+ if(back)ellipse(c,0,-15,3.5,3.4,type==='villager'?'#6a4c36':'#8a9b92');
+ else{if(Math.abs(side)>.3)ellipse(c,4,-14,1.8,1.5,'#e4bd86');ellipse(c,Math.abs(side)>.3?2.8:1.7,-15.6,.65,.8,'#473f32');}
+ if(type!=='villager'){
+  if(type==='archer'){c.beginPath();c.arc(6,-9,6,-1.4,1.4);c.strokeStyle='#ad8b53';c.lineWidth=1.4;c.stroke();line(c,7,-15,7,-3,'#e3d3a5',.6);}
+  else{
+   line(c,6,-2,6,type==='guard'?-12:-14,'#d5d8bd',2);
+   if(type==='guard'){polygon(c,[[-9,-12],[-2,-12],[-2,-6],[-5.5,-1],[-9,-6]],color);line(c,-5.5,-11,-5.5,-4,'#d5d8bd',1);}
+   else ellipse(c,-5,-7,3.2,5,color,outline);
+  }
+ }
+ c.restore();
+}
+export function drawCanoe(c,x,y,type,phase=0,enemy=false,facing=0){
+ c.save();c.translate(x,y+Math.sin(phase*.5));c.save();c.scale(1,.75);c.rotate(facing);
+ c.strokeStyle='#b7d9cf99';c.lineWidth=1.2;c.beginPath();c.ellipse(0,3,25,8,0,0,Math.PI*2);c.stroke();
+ polygon(c,[[-23,-1],[-13,-9],[13,-9],[23,-1],[11,7],[-11,7]],'#8a5835');
+ polygon(c,[[-19,-1],[-10,-6],[10,-6],[19,-1],[9,3],[-9,3]],'#bf925b');
+ line(c,-20,0,20,0,'#e2bc7d',1.4);
+ const paddle=Math.sin(phase)*5;line(c,5,-6,18+paddle,10,'#d5b37a',2);line(c,18+paddle,10,22+paddle,15,'#ad7d47',4);
+ c.restore();drawPerson(c,0,-2,type,0,enemy,facing);c.restore();
+}
 export function iconSvg(type){
- const paths={wood:'<path d="m6 22 17-12 6 7-17 12z" fill="#9b6036"/><ellipse cx="9" cy="25" rx="5" ry="6" fill="#d9ad73" transform="rotate(-37 9 25)"/><path d="m7 14 13-9 5 6-13 9z" fill="#b77d47"/><ellipse cx="10" cy="17" rx="4" ry="5" fill="#ebc28b"/>',stone:'<path d="m5 24 2-12 10-7 11 8 2 13-15 4z" fill="#97a79d"/><path d="m7 12 10-7 5 10-10 5z" fill="#cad0bb"/><path d="m12 20 10-5 8 11-15 4z" fill="#798e87"/>',food:'<path d="m12 29 11-25M17 22l-5-6m8 0-4-7" stroke="#9b7b36" fill="none"/><g fill="#dcae42"><ellipse cx="11" cy="17" rx="3" ry="5" transform="rotate(-35 11 17)"/><ellipse cx="16" cy="10" rx="3" ry="5" transform="rotate(-35 16 10)"/><ellipse cx="24" cy="10" rx="3" ry="5" transform="rotate(35 24 10)"/><ellipse cx="21" cy="18" rx="3" ry="5" transform="rotate(35 21 18)"/></g>',gold:'<ellipse cx="17" cy="23" rx="11" ry="5" fill="#b97c24"/><ellipse cx="17" cy="19" rx="11" ry="5" fill="#e3b647"/><ellipse cx="15" cy="14" rx="11" ry="5" fill="#ba882d"/><ellipse cx="15" cy="11" rx="11" ry="5" fill="#f0cd6c"/><path d="M13 8v6m4-5-4 4" stroke="#bb8e37"/>',people:'<circle cx="13" cy="10" r="5" fill="#e6c79b"/><path d="M4 28v-6a9 9 0 0 1 18 0v6" fill="#668878"/><circle cx="25" cy="13" r="4" fill="#e6c79b"/><path d="M24 21q8-1 7 7h-6" fill="#9aa982"/>',shield:'<path d="m17 4 11 5v10q-2 8-11 12Q6 25 6 19V9z" fill="#5d8277"/><path d="m17 8 7 4v7q-2 5-7 8z" fill="#a7b3a0"/>',sword:'<path d="m9 27 17-21 2-3 1 5-17 22z" fill="#c8d3c3"/><path d="m7 19 10 9M4 30l6-7" stroke="#b99551" stroke-width="3"/>',crown:'<path d="m5 11 7 6 5-11 5 11 8-6-3 17H8z" fill="#dcaf55"/><path d="M9 24h17" stroke="#f2d18c"/>',leaf:'<path d="M7 27C-1 4 23 3 29 4c1 21-14 30-22 23Z" fill="#6d9165"/><path d="m7 28 17-18" stroke="#d4dcb7"/>',hammer:'<path d="m9 30 14-20" stroke="#a57648" stroke-width="6"/><path d="m14 5 6-4 12 10-6 7z" fill="#96a297"/>'};
+ const paths={settings:'<path d="m14 3 8 0 1 5 4 2 5-1 4 7-4 4v4l4 3-4 7-5-1-4 2-1 5h-8l-1-5-4-2-5 1-4-7 4-3v-4l-4-4 4-7 5 1 4-2z" fill="#5d8277" transform="translate(2 -2) scale(.85)"/><circle cx="18" cy="17" r="5" fill="#f6f0df"/>',save:'<path d="M6 5h20l5 5v21H5V5z" fill="#5d8277"/><path d="M11 5h13v10H11zM10 22h16v9H10z" fill="#e8dec2"/><path d="M20 7v6" stroke="#5d8277" stroke-width="3"/>',book:'<path d="M6 6q7-3 12 2 5-5 12-2v25q-7-3-12 1-5-4-12-1z" fill="#c6b589"/><path d="M18 8v24M10 12h4m-4 5h4m8-5h4m-4 5h4" fill="none" stroke="#5d7460"/>',help:'<circle cx="18" cy="18" r="14" fill="#5d8277"/><path d="M13 13c0-7 12-7 11 0 0 4-6 3-6 8" fill="none" stroke="#f5ebce" stroke-width="3"/><circle cx="18" cy="27" r="1.8" fill="#f5ebce"/>',sound:'<path d="M5 14h7l8-7v22l-8-7H5z" fill="#5d8277"/><path d="M24 12q8 6 0 12m4-17q13 11 0 22" fill="none" stroke="#5d8277" stroke-width="2"/>',muted:'<path d="M5 14h7l8-7v22l-8-7H5z" fill="#5d8277"/><path d="m25 13 8 10m0-10-8 10" stroke="#a8644b" stroke-width="2"/>',wood:'<path d="m6 22 17-12 6 7-17 12z" fill="#9b6036"/><ellipse cx="9" cy="25" rx="5" ry="6" fill="#d9ad73" transform="rotate(-37 9 25)"/><path d="m7 14 13-9 5 6-13 9z" fill="#b77d47"/><ellipse cx="10" cy="17" rx="4" ry="5" fill="#ebc28b"/>',stone:'<path d="m5 24 2-12 10-7 11 8 2 13-15 4z" fill="#97a79d"/><path d="m7 12 10-7 5 10-10 5z" fill="#cad0bb"/><path d="m12 20 10-5 8 11-15 4z" fill="#798e87"/>',food:'<path d="m12 29 11-25M17 22l-5-6m8 0-4-7" stroke="#9b7b36" fill="none"/><g fill="#dcae42"><ellipse cx="11" cy="17" rx="3" ry="5" transform="rotate(-35 11 17)"/><ellipse cx="16" cy="10" rx="3" ry="5" transform="rotate(-35 16 10)"/><ellipse cx="24" cy="10" rx="3" ry="5" transform="rotate(35 24 10)"/><ellipse cx="21" cy="18" rx="3" ry="5" transform="rotate(35 21 18)"/></g>',gold:'<ellipse cx="17" cy="23" rx="11" ry="5" fill="#b97c24"/><ellipse cx="17" cy="19" rx="11" ry="5" fill="#e3b647"/><ellipse cx="15" cy="14" rx="11" ry="5" fill="#ba882d"/><ellipse cx="15" cy="11" rx="11" ry="5" fill="#f0cd6c"/><path d="M13 8v6m4-5-4 4" stroke="#bb8e37"/>',people:'<circle cx="13" cy="10" r="5" fill="#e6c79b"/><path d="M4 28v-6a9 9 0 0 1 18 0v6" fill="#668878"/><circle cx="25" cy="13" r="4" fill="#e6c79b"/><path d="M24 21q8-1 7 7h-6" fill="#9aa982"/>',shield:'<path d="m17 4 11 5v10q-2 8-11 12Q6 25 6 19V9z" fill="#5d8277"/><path d="m17 8 7 4v7q-2 5-7 8z" fill="#a7b3a0"/>',sword:'<path d="m9 27 17-21 2-3 1 5-17 22z" fill="#c8d3c3"/><path d="m7 19 10 9M4 30l6-7" stroke="#b99551" stroke-width="3"/>',crown:'<path d="m5 11 7 6 5-11 5 11 8-6-3 17H8z" fill="#dcaf55"/><path d="M9 24h17" stroke="#f2d18c"/>',leaf:'<path d="M7 27C-1 4 23 3 29 4c1 21-14 30-22 23Z" fill="#6d9165"/><path d="m7 28 17-18" stroke="#d4dcb7"/>',hammer:'<path d="m9 30 14-20" stroke="#a57648" stroke-width="6"/><path d="m14 5 6-4 12 10-6 7z" fill="#96a297"/>'};
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><g stroke="#493e2c" stroke-width="1" stroke-linejoin="round">${paths[type]||paths.shield}</g></svg>`;
 }
 export const preview=spriteUrl;

@@ -5,7 +5,7 @@ import {building,initialState,loadState,MARKET_TRADES,marketTrade,production,pro
 function village(population=6,level=1){
  const state=initialState();state.army={swordsman:0,archer:0,guard:0};state.population=population;
  state.buildings=[building('market',20,20),building('castle',25,20)];state.raidIn=9999;
- state.buildings[0].level=level;
+ state.buildings[0].level=level;state.buildings[0].assignedWorkers=Math.min(1,population);
  state.resources={wood:100,stone:100,food:100,gold:0};
  return state;
 }
@@ -43,7 +43,7 @@ test('trade pauses without a worker and skips a deal without enough stock',()=>{
  assert.equal(staffing(state)[id].assigned,0);
  assert.equal(state.buildings[0].tradeProgress,0);
  assert.ok(Math.abs(state.resources.gold-25*.12)<1e-8);
- state.population=6;state.resources.food=100;state.resources.wood=9;
+ state.population=6;state=reducer(state,{type:'ASSIGN_WORKER',id,delta:1});state.resources.food=100;state.resources.wood=9;
  state=tick(state,20);
  assert.equal(state.resources.wood,9);
  assert.ok(Math.abs(state.resources.gold-45*.12)<1e-8);

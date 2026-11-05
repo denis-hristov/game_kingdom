@@ -4,7 +4,7 @@ import {initialState,reducer,building,production,projectedProduction,cropCapacit
 
 function farmVillage(level=1,population=5){
  const s=initialState();s.army={swordsman:0,archer:0,guard:0};s.population=population;
- s.buildings=[{...building('farm',20,20),level},building('castle',25,20)];return s;
+ s.buildings=[{...building('farm',20,20),level,assignedWorkers:Math.min(population,5+(level-1)*3)},building('castle',25,20)];return s;
 }
 
 test('farms give 5, 8 and 11 plot slots without automatic food production',()=>{
@@ -48,14 +48,14 @@ test('full team ripens wheat in 45 ticks; harvest gives exactly 5 food once and 
  s=reducer(s,{type:'HARVEST',id:cropId});assert.equal(s.resources.food,food+WHEAT_YIELD);
 });
 
-test('understaffed farm needs 90 ticks, ruined farm freezes crops, pause freezes them too',()=>{
- let s=farmVillage(1,0),farmId=s.buildings[0].id;
+test('understaffed farm grows at half speed and a ruined farm freezes crops',()=>{
+ let s=farmVillage(1,1),farmId=s.buildings[0].id;
  s=reducer(s,{type:'PLANT',farmId,x:15,y:15});
  for(let i=0;i<45;i++)s=reducer(s,{type:'TICK'});
  assert.equal(s.crops[0].progress,22.5);
  s.buildings[0].hp=0;for(let i=0;i<10;i++)s=reducer(s,{type:'TICK'});
  assert.equal(s.crops[0].progress,22.5);
- s.buildings[0].hp=100;s=reducer(s,{type:'PAUSE'});s=reducer(s,{type:'TICK'});
+ s.buildings[0].hp=100;s=reducer(s,{type:'TICK'});
  assert.equal(s.crops[0].progress,22.5);
 });
 

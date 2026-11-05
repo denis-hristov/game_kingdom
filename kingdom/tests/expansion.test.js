@@ -36,5 +36,6 @@ test('land cannot expand beyond the third purchase',()=>{
  const before={...state.resources};
  state=reducer(state,{type:'EXPAND'});
  assert.equal(state.expansion,3);
+ assert.equal(requiredCastleLevelForExpansion(state.expansion),null);
  assert.deepEqual(state.resources,before);
 });
